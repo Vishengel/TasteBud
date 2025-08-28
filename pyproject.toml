@@ -1,0 +1,30 @@
+[project]
+name = "tastebud"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
