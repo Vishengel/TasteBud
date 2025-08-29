@@ -4,7 +4,7 @@ from pathlib import Path
 import polars as pl
 
 from tastebud.config import CONFIG
-from tastebud.file_util import get_json_files_in_dir, load_json_from_file
+from tastebud.util.file_util import get_json_files_in_dir, load_json_from_file
 
 
 def _get_year_range_from_json_file_names(json_files: list[Path]) -> str:
