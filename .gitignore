@@ -1,4 +1,6 @@
 .venv
 .idea
-.env
+tastebud/.env
 data
+*/.cache
+*.pyc
