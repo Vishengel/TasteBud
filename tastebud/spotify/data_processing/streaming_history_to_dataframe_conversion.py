@@ -49,7 +49,7 @@ def _get_records_from_json(json_path: Path) -> list[dict]:
     return track_records
 
 
-def convert_streaming_history_to_parquet(streaming_history_dir: Path, user_name: str) -> None:
+def convert_streaming_history_to_dataframe(streaming_history_dir: Path, user_name: str) -> None:
     json_files = get_spotify_history_files_in_dir(dir_path=streaming_history_dir, history_type="audio")
     year_range = _get_year_range_from_json_file_names(json_files=json_files)
 
