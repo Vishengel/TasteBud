@@ -1,0 +1,66 @@
+# Match project’s Python and line length preferences
+target-version = "py312"
+line-length = 120
+
+# Auto-fix what’s safe by default, and allow pyupgrade-style modernizations
+fix = true
+unsafe-fixes = true
+
+exclude = [
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".venv",
+  "venv",
+  "build",
+  "dist",
+  "__pycache__",
+]
+extend-exclude = [
+  # From .flake8
+  "tests/fixtures/*",
+  "tests/**/fixtures/*",
+]
+
+[lint]
+# E,F: Flake8 core (pycodestyle/pyflakes)
+# B: flake8-bugbear
+# A: flake8-builtins
+# C4: flake8-comprehensions
+# PTH: flake8-use-pathlib
+# UP: pyupgrade
+# D: pydocstyle
+# I: isort-equivalent import sorting
+# RUF: Ruff-specific (e.g., unused noqa)
+select = ["E", "F", "B", "A", "C4", "PTH", "UP", "D", "I", "RUF"]
+
+# - E203 to be compatible with Black-style formatting
+# - Allow plain open() calls (equivalent of the PL123 note -> Ruff's PLR1732)
+# - Don’t require docstrings (our pylint disabled missing-docstring checks)
+# - Don't require blank line after a docstring
+ignore = [
+  "E203",
+  "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", # no docstring required
+  "D205",  # 1 blank line required between summary line and description
+]
+
+[format]
+# Use Ruff Formatter to replace Black
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[lint.pydocstyle]
+# Keep docstring style conservative; docstring presence is disabled above (D10x)
+convention = "pep257"
+
+[lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+known-first-party = ["tastebud"]
+
+[lint.pyupgrade]
+# Mirror our old pyupgrade setup
+keep-runtime-typing = true
