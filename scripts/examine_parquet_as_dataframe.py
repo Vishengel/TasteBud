@@ -2,7 +2,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from tastebud.polars_df_wrapper import PolarsDfWrapper
+from tastebud.spotify.polars_df_wrapper import PolarsDfWrapper
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",

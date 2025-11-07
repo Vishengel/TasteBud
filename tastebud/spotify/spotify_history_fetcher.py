@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from diskcache import Cache
-from polars import DataFrame, col, count, read_parquet
+from polars import DataFrame, col, read_parquet
 from spotipy import Spotify
 from tqdm import tqdm
 
@@ -26,7 +26,6 @@ class SpotifyHistoryFetcher:
         )
         self._get_artist_uris()
         logger.debug(self.history_df.head())
-        self._compute_aggregates()
 
         output_path = parquet_path.with_name(parquet_path.name + "_enhanced.parquet")
         self.history_df.write_parquet(output_path)
@@ -121,14 +120,3 @@ class SpotifyHistoryFetcher:
 
         # Join genres back into your history
         self.history_df = self.history_df.join(artist_genres_df, on=["artist", "artist_uri"], how="left")
-
-    def _compute_aggregates(self):
-        self.artists_df = self._aggregate_by_col_names("artist")
-        self.tracks_df = self._aggregate_by_col_names(["track_uri", "track", "artist"])
-
-    def _aggregate_by_col_names(self, col_names: str | list[str]):
-        aggregate_df = (
-            self.history_df.group_by(col_names).agg(count().alias("play_count")).sort("play_count", descending=True)
-        )
-        logger.debug(aggregate_df.head())
-        return aggregate_df
