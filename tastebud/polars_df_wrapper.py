@@ -5,8 +5,8 @@ import polars
 
 logger = logging.getLogger()
 
-class PolarsDfWrapper:
 
+class PolarsDfWrapper:
     def __init__(self, df: polars.DataFrame):
         self.df = df
 

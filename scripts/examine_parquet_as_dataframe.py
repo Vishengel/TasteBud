@@ -2,8 +2,6 @@ import argparse
 import logging
 from pathlib import Path
 
-import polars
-
 from tastebud.polars_df_wrapper import PolarsDfWrapper
 
 logging.basicConfig(
@@ -13,10 +11,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("parquet_file", type=Path)
     return parser.parse_args()
+
 
 if __name__ == "__main__":
     args = get_args()

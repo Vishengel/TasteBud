@@ -1,9 +1,25 @@
 from pathlib import Path
+from typing import Literal
 
 import polars as pl
 
 from tastebud.config import CONFIG
-from tastebud.util.file_util import get_json_files_in_dir, load_json_from_file
+from tastebud.util.file_util import get_files_in_dir, load_json_from_file, logger
+
+
+def get_spotify_history_files_in_dir(
+    dir_path: Path, history_type: Literal["audio", "video", "all"] = "all"
+) -> list[Path]:
+    if history_type == "audio":
+        logger.info("Getting audio history files.")
+        file_pattern = "*Audio*.json"
+    elif history_type == "video":
+        logger.info("Getting video history files.")
+        file_pattern = "*Video*.json"
+    else:
+        logger.info("Getting all .json files.")
+        file_pattern = "*.json"
+    return get_files_in_dir(dir_path, file_pattern=file_pattern)
 
 
 def _get_year_range_from_json_file_names(json_files: list[Path]) -> str:
@@ -34,7 +50,7 @@ def _get_records_from_json(json_path: Path) -> list[dict]:
 
 
 def convert_streaming_history_to_parquet(streaming_history_dir: Path, user_name: str) -> None:
-    json_files = get_json_files_in_dir(json_path=streaming_history_dir, history_type="audio")
+    json_files = get_spotify_history_files_in_dir(dir_path=streaming_history_dir, history_type="audio")
     year_range = _get_year_range_from_json_file_names(json_files=json_files)
 
     output_file_name = f"Streaming_History_Audio_{user_name}_{year_range}.parquet"

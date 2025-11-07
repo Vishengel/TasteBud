@@ -1,7 +1,9 @@
 import argparse
 from pathlib import Path
 
-from tastebud.data_processing.streaming_history_to_parquet_conversion import convert_streaming_history_to_parquet
+from tastebud.spotify.data_processing.streaming_history_to_parquet_conversion import (
+    convert_streaming_history_to_parquet,
+)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

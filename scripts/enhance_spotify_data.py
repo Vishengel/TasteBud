@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from spotipy import CacheFileHandler, Spotify, SpotifyClientCredentials
 
 from tastebud.config import CONFIG
-from tastebud.data_analysis.spotify_data_analyzer import SpotifyHistoryAnalyzer
+from tastebud.spotify.data_analysis.spotify_data_analyzer import SpotifyHistoryAnalyzer
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",
