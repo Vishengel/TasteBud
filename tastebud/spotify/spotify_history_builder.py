@@ -12,7 +12,7 @@ from tastebud.util.data_util import chunk_generator
 logger = logging.getLogger(__name__)
 
 
-class SpotifyHistoryFetcher:
+class SpotifyHistoryBuilder:
     artist_cache = Cache(CONFIG.cache_dir / "spotify_artist_meta")
 
     def __init__(self, sp_client: Spotify, parquet_path: Path):

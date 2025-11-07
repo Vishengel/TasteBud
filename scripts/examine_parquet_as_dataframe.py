@@ -2,7 +2,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from tastebud.spotify.polars_df_wrapper import PolarsDfWrapper
+from tastebud.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",
@@ -20,5 +20,5 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    polars_wrapper = PolarsDfWrapper.from_parquet(args.parquet_file)
+    polars_wrapper = SpotifyHistoryDataFrame.from_parquet(args.parquet_file)
     polars_wrapper.print_df_info()

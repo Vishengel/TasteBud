@@ -13,13 +13,22 @@ class SpotifyHistoryDataFrame:
     play_count_per_track: polars.DataFrame
 
     def __init__(self, history_df: polars.DataFrame):
-        self.history_df = history_df
+        self.history_df = history_df.with_columns(polars.col("ts").str.to_datetime()).sort("ts", descending=False)
         self._compute_aggregates()
+
+    @property
+    def history_start_date(self):
+        return self.history_df.item(0, "ts")
+
+    @property
+    def history_end_date(self):
+        return self.history_df.item(-1, "ts")
 
     def print_df_info(self):
         logger.info("Rows: %s", self.history_df.shape[0])
         logger.info("Columns: %s", self.history_df.shape[1])
         logger.info("Columns: %s", self.history_df.columns)
+        logger.info("Timespan: [%s, %s]", self.history_start_date, self.history_end_date)
         logger.info("Top 10 rows: %s", self.history_df.head(10))
         logger.info("Bottom 10 rows: %s", self.history_df.tail(10))
 
