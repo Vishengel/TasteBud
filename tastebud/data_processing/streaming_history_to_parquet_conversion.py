@@ -46,11 +46,3 @@ def convert_streaming_history_to_parquet(streaming_history_dir: Path, user_name:
 
     df = pl.from_dicts(track_records)
     df.write_parquet(CONFIG.data_dir / output_file_name)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--streaming_history_dir", type=Path)
-    parser.add_argument("--user_name", type=Path)
-    args = parser.parse_args()
-    convert_streaming_history_to_parquet(args.streaming_history_dir, args.user_name)
