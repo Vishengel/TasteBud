@@ -1,6 +1,7 @@
 import polars as pl
 
 from tastebud.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
+from tastebud.util.query_util import httpx_get_request
 
 
 class TastediveGraphDataExtractor:
@@ -31,4 +32,11 @@ class TastediveGraphDataExtractor:
         self.edges_df = pl.DataFrame(edges)
 
     def _get_tastedive_recommendations(self, artist: str) -> list[str]:
-        pass
+        url = "https://tastedive.com/api/similar"
+        params = {
+            "k": self.tastedive_api_key,
+            "q": artist,
+            "type": "music",
+        }
+        response = httpx_get_request(url, params)
+        print(response)
