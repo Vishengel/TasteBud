@@ -1,6 +1,9 @@
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+load_dotenv()
 
 
 class _Config(BaseSettings):
@@ -9,8 +12,14 @@ class _Config(BaseSettings):
     cache_dir: Path = project_root / "cache"
     data_dir: Path = project_root / "data"
 
+    spotify_client_id: str
+    spotify_client_secret: str
+    tastedive_api_key: str
+
     cache_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 CONFIG = _Config()
