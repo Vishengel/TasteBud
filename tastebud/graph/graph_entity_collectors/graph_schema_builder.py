@@ -1,11 +1,11 @@
 from polars import concat
 
 from tastebud.graph.graph_dataclass import GraphSchema
-from tastebud.graph.graph_entity_collectors.base_graph_entity_collector import BaseGraphEntityCollector
+from tastebud.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
 
 
 class GraphSchemaBuilder:
-    def __init__(self, builders: list[BaseGraphEntityCollector]):
+    def __init__(self, builders: list[GraphEntityCollector]):
         self.builders = builders
 
     def create_schema(self, unique_artists: set[str]) -> GraphSchema:

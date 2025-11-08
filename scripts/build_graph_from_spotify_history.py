@@ -4,11 +4,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from tastebud.config import CONFIG
 from tastebud.graph.graph_builders.grape_graph_builder import GrapeGraphBuilder
 from tastebud.graph.graph_builders.graph_builder_pipeline import GraphBuilderPipeline
+from tastebud.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
 from tastebud.graph.graph_entity_collectors.graph_schema_builder import GraphSchemaBuilder
-from tastebud.graph.graph_entity_collectors.tastedive_graph_entity_collector import TastediveGraphEntityCollector
+from tastebud.graph.graph_entity_collectors.tastedive_entity_source import TastediveEntitySource
 from tastebud.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 logging.basicConfig(
@@ -28,7 +28,7 @@ def get_args():
 
 
 def build_graph_from_spotify_history(spotify_history_df: SpotifyHistoryDataFrame):
-    tastedive_builder = TastediveGraphEntityCollector(CONFIG.tastedive_api_key, spotify_history_df)
+    tastedive_builder = GraphEntityCollector(TastediveEntitySource())
 
     schema_builder = GraphSchemaBuilder([tastedive_builder])
 
