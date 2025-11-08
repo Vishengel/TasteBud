@@ -2,7 +2,7 @@ import json
 import logging
 from pathlib import Path
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def load_json_from_file(json_path: Path) -> dict:

@@ -4,7 +4,7 @@ from pathlib import Path
 import polars
 from polars import count
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class SpotifyHistoryDataFrame:

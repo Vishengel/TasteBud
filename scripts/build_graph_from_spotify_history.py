@@ -14,8 +14,9 @@ logging.basicConfig(
     datefmt="%Y-%m-%dT%H:%M:%S",
     level=logging.DEBUG,
 )
-logger = logging.getLogger()
-
+logger = logging.getLogger(__name__)
+logging.getLogger("httpx").setLevel(logging.INFO)
+logging.getLogger("httpcore").setLevel(logging.INFO)
 
 def get_args():
     parser = argparse.ArgumentParser()

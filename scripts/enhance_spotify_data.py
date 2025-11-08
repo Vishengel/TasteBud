@@ -6,14 +6,14 @@ from dotenv import load_dotenv
 from spotipy import CacheFileHandler, Spotify, SpotifyClientCredentials
 
 from tastebud.config import CONFIG
-from tastebud.spotify.data_analysis.spotify_data_analyzer import SpotifyHistoryFetcher
+from tastebud.spotify.spotify_history_builder import SpotifyHistoryBuilder
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
     level=logging.DEBUG,
 )
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logging.getLogger("spotipy").setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -34,4 +34,4 @@ if __name__ == "__main__":
             cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / "credentials")
         )
     )
-    spotify_history_analyzer = SpotifyHistoryFetcher(sp_client, args.history)
+    spotify_history_analyzer = SpotifyHistoryBuilder(sp_client, args.history)
