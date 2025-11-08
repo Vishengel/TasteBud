@@ -15,6 +15,8 @@ class _Config(BaseSettings):
     spotify_client_id: str
     spotify_client_secret: str
     tastedive_api_key: str
+    lastfm_api_key: str
+    lastfm_shared_secret: str
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
