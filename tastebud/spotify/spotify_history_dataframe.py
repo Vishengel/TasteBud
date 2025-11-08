@@ -36,7 +36,13 @@ class SpotifyHistoryDataFrame:
 
     @property
     def unique_artists(self) -> polars.Series:
-        return self.history_df.select(self.ARTIST_COL_NAME).unique().to_series()
+        return (
+            self.history_df.select(self.ARTIST_COL_NAME)
+            .drop_nans()
+            .filter(polars.col(self.ARTIST_COL_NAME).is_not_null())
+            .unique()
+            .to_series()
+        )
 
     def print_df_info(self):
         logger.info("Created Spotify History DataFrame:")
