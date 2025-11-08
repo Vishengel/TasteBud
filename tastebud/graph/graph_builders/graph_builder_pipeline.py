@@ -9,7 +9,7 @@ class GraphBuilderPipeline:
         self.graph_builder_class = graph_builder_class
 
     def build(self, spotify_history: SpotifyHistoryDataFrame):
-        unique_artists = set(spotify_history.unique_artists.to_list())
+        unique_artists = set(spotify_history.get_eligible_artists().to_list())
 
         graph_schema = self.schema_builder.create_schema(unique_artists)
 

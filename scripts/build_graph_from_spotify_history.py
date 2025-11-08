@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
+from embiggen import GraphVisualizer
 
 from tastebud.graph.graph_builders.grape_graph_builder import GrapeGraphBuilder
 from tastebud.graph.graph_builders.graph_builder_pipeline import GraphBuilderPipeline
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.INFO)
 logging.getLogger("pylast").setLevel(logging.WARNING)
+logging.getLogger("embiggen").setLevel(logging.DEBUG)
 
 
 def get_args():
@@ -43,4 +45,7 @@ if __name__ == "__main__":
     args = get_args()
     load_dotenv()
     spotify_history_df = SpotifyHistoryDataFrame.from_parquet(args.parquet_file)
-    build_graph_from_spotify_history(spotify_history_df)
+    graph = build_graph_from_spotify_history(spotify_history_df)
+    visualization = GraphVisualizer(graph).plot_dot()
+    visualization.engine = "fdp"
+    visualization.render()

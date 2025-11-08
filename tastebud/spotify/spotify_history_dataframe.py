@@ -26,6 +26,26 @@ class SpotifyHistoryDataFrame:
         self._compute_aggregates()
         self.print_df_info()
 
+    def get_eligible_artists(self, min_duration_ms: int = 60000, min_play_count: int = 50) -> polars.Series:
+        # Step 1: Filter tracks with sufficient duration
+        filtered_tracks = self.history_df.filter(polars.col("ms_played") > min_duration_ms)
+
+        # Step 2: Group by artist and calculate play count
+        eligible_artists_df = (
+            filtered_tracks.group_by(self.ARTIST_COL_NAME)
+            .agg(polars.count().alias("play_count"))
+            .filter(polars.col("play_count") >= min_play_count)
+        )
+
+        # Step 3: Extract unique artist names
+        return (
+            eligible_artists_df.select(self.ARTIST_COL_NAME)
+            .drop_nans()
+            .filter(polars.col(self.ARTIST_COL_NAME).is_not_null())
+            .unique()
+            .to_series()
+        )
+
     @property
     def history_start_date(self):
         return self.history_df.item(0, self.TIMESTAMP_COL_NAME)

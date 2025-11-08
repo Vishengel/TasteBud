@@ -5,3 +5,4 @@ data
 */.cache
 cache/
 *.pyc
+*Source.gv*
