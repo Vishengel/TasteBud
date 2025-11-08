@@ -18,11 +18,6 @@ exclude = [
   "dist",
   "__pycache__",
 ]
-extend-exclude = [
-  # From .flake8
-  "tests/fixtures/*",
-  "tests/**/fixtures/*",
-]
 
 [lint]
 # E,F: Flake8 core (pycodestyle/pyflakes)
@@ -62,5 +57,4 @@ force-wrap-aliases = true
 known-first-party = ["tastebud"]
 
 [lint.pyupgrade]
-# Mirror our old pyupgrade setup
 keep-runtime-typing = true
