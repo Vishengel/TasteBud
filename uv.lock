@@ -1194,6 +1194,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pylast"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/f5/ec144f937b32252b127f892636c6875d876b856a9f289f3c0bc8a4e05932/pylast-6.0.0.tar.gz", hash = "sha256:09748dcdb97ddc812c65460bea73f7cce578b2b8ed4d9f6a0d1da122f8b05c5c", size = 45408, upload-time = "2025-09-29T12:44:18.935Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/03/c2ebbacdf3d200409198dde206cb2f59a3ee87c4086c7138cf69e3374ef1/pylast-6.0.0-py3-none-any.whl", hash = "sha256:8570017a955a04c5694e7ad38b13081b6119531b4a10bfc771ccd0b9d4f900ee", size = 26614, upload-time = "2025-09-29T12:44:17.423Z" },
+]
+
+[[package]]
 name = "pyparsing"
 version = "3.2.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1432,6 +1444,7 @@ dependencies = [
     { name = "polars" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "pylast" },
     { name = "python-dotenv" },
     { name = "requests" },
     { name = "spotipy" },
@@ -1446,6 +1459,7 @@ requires-dist = [
     { name = "polars", specifier = ">=1.32.3" },
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "pylast", specifier = ">=6.0.0" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "spotipy", specifier = ">=2.25.1" },

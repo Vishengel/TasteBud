@@ -17,6 +17,8 @@ class _Config(BaseSettings):
     tastedive_api_key: str
     lastfm_api_key: str
     lastfm_shared_secret: str
+    lastfm_username: str
+    lastfm_password: str
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)

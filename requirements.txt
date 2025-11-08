@@ -265,7 +265,9 @@ httpcore==1.0.9 \
 httpx==0.28.1 \
     --hash=sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc \
     --hash=sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad
-    # via tastebud
+    # via
+    #   pylast
+    #   tastebud
 humanize==4.14.0 \
     --hash=sha256:2fa092705ea640d605c435b1ca82b2866a1b601cdf96f076d70b79a855eba90d \
     --hash=sha256:d57701248d040ad456092820e6fde56c930f17749956ac47f4f655c0c547bfff
@@ -765,6 +767,10 @@ pygments==2.19.2 \
     # via
     #   ipython
     #   ipython-pygments-lexers
+pylast==6.0.0 \
+    --hash=sha256:09748dcdb97ddc812c65460bea73f7cce578b2b8ed4d9f6a0d1da122f8b05c5c \
+    --hash=sha256:8570017a955a04c5694e7ad38b13081b6119531b4a10bfc771ccd0b9d4f900ee
+    # via tastebud
 pyparsing==3.2.5 \
     --hash=sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6 \
     --hash=sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e
