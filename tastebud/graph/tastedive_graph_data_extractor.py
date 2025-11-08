@@ -1,10 +1,10 @@
 import sys
+from urllib.parse import quote
 
 import httpx
 import polars as pl
 from diskcache import Cache
 from tqdm import tqdm
-from urllib.parse import quote
 
 from tastebud.config import CONFIG
 from tastebud.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
@@ -43,7 +43,7 @@ class TastediveGraphDataExtractor:
     def _query_tastedive(self, params: dict) -> dict | None:
         try:
             response = httpx_get_request(self.TASTEDIVE_URL, params)
-        except httpx.HTTPStatusError as e:
+        except httpx.HTTPStatusError:
             sys.exit("Tastedive API is limited to 300 requests per hour. Exiting.")
 
         return response
@@ -54,14 +54,8 @@ class TastediveGraphDataExtractor:
         cached_response = self.artist_cache.get(query)
         if cached_response is not None:
             return cached_response
-        
-        params = {
-            "k": self.tastedive_api_key,
-            "q": query,
-            "type": "music",
-            "slimit": 2,
-            "limit": 20
-        }
+
+        params = {"k": self.tastedive_api_key, "q": query, "type": "music", "slimit": 2, "limit": 20}
 
         response = self._query_tastedive(params)
 

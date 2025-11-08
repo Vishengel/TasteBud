@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import httpx
 
@@ -7,8 +6,10 @@ logger = logging.getLogger(__name__)
 
 TOO_MANY_REQUESTS_ERROR_CODE = 429
 
+
 class TooManyRequestsError(Exception):
     pass
+
 
 def httpx_get_request(url: str, params: dict) -> dict | None:
     try:
@@ -21,7 +22,7 @@ def httpx_get_request(url: str, params: dict) -> dict | None:
         return None
     except httpx.HTTPStatusError as e:
         if e.response.status_code == TOO_MANY_REQUESTS_ERROR_CODE:
-            raise TooManyRequestsError()
+            raise TooManyRequestsError() from e
         logger.error(f"HTTP error occurred: {e.response.status_code} - {e.response.text}")
         return None
 

@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.INFO)
 logging.getLogger("httpcore").setLevel(logging.INFO)
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("parquet_file", type=Path)
