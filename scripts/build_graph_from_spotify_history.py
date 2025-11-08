@@ -8,7 +8,7 @@ from tastebud.graph.graph_builders.grape_graph_builder import GrapeGraphBuilder
 from tastebud.graph.graph_builders.graph_builder_pipeline import GraphBuilderPipeline
 from tastebud.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
 from tastebud.graph.graph_entity_collectors.graph_schema_builder import GraphSchemaBuilder
-from tastebud.graph.graph_entity_collectors.tastedive_entity_source import TastediveEntitySource
+from tastebud.graph.graph_entity_collectors.lastfm_entity_source import LastFMEntitySource
 from tastebud.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 logging.basicConfig(
@@ -17,8 +17,9 @@ logging.basicConfig(
     level=logging.DEBUG,
 )
 logger = logging.getLogger(__name__)
-logging.getLogger("httpx").setLevel(logging.INFO)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.INFO)
+logging.getLogger("pylast").setLevel(logging.WARNING)
 
 
 def get_args():
@@ -28,7 +29,7 @@ def get_args():
 
 
 def build_graph_from_spotify_history(spotify_history_df: SpotifyHistoryDataFrame):
-    tastedive_builder = GraphEntityCollector(TastediveEntitySource())
+    tastedive_builder = GraphEntityCollector(LastFMEntitySource())
 
     schema_builder = GraphSchemaBuilder([tastedive_builder])
 

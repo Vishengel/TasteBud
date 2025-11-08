@@ -7,7 +7,7 @@ class LastFMClient:
             api_key=api_key, api_secret=api_secret, username=username, password_hash=pylast.md5(password)
         )
 
-    def get_similar_artists(self, artist_name: str, limit: int | None = None) -> list[str]:
+    def get_similar_artists(self, artist_name: str, limit: int | None = 10) -> list[str]:
         artist = self.network.get_artist(artist_name)
         similar_artists = artist.get_similar(limit=limit)
-        return [artist.name for artist in similar_artists]
+        return [similar_artist.item.name for similar_artist in similar_artists]

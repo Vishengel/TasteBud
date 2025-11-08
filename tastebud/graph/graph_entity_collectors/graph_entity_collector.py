@@ -14,7 +14,7 @@ class GraphEntityCollector:
         edges = []
 
         for entity in tqdm(unique_entities, desc="Collecting related entities"):
-            related_entities = self.relationship_source.get_related_entities(entity)
+            related_entities = self.relationship_source.get_related_entities([entity])
 
             for related_entity in related_entities:
                 if related_entity not in unique_entities:

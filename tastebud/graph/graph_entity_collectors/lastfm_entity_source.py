@@ -12,6 +12,7 @@ class LastFMEntitySource:
             self.lastfm_api_client = lastfm_api_client
 
     def get_related_entities(self, entities: list[str]) -> list[str]:
-        similar_artists = []
-        similar_artists.extend(self.lastfm_api_client.get_similar_artists(artist) for artist in entities)
+        similar_artists = [
+            artist for entity in entities for artist in self.lastfm_api_client.get_similar_artists(entity)
+        ]
         return similar_artists
