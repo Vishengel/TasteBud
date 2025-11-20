@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import ClassVar
 
 from spotipy import CacheFileHandler, Spotify, SpotifyOAuth
@@ -27,7 +28,7 @@ class SpotifyClient(Spotify):
     def fetch_tracks_for_playlist(self, playlist_id: str) -> list[dict]:
         return self._fetch_paginated_items(self.playlist_items, playlist_id)
 
-    def _fetch_paginated_items(self, fetch_function, *args, **kwargs) -> list[dict]:
+    def _fetch_paginated_items(self, fetch_function: Callable, *args, **kwargs) -> list[dict]:
         items = []
         result = fetch_function(*args, **kwargs)
         items.extend(result["items"])
