@@ -20,7 +20,10 @@ class SpotifyClient(Spotify):
                 scope=self.SCOPE, cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / "credentials")
             )
         )
-        self.current_user_id = self.current_user()["id"]
+
+    @property
+    def current_user_id(self) -> str:
+        return self.current_user()["id"]
 
     def fetch_all_playlists(self, user_id: str) -> list[dict]:
         return self._fetch_paginated_items(self.user_playlists, user_id, limit=100)
