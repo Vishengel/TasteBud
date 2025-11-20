@@ -2,7 +2,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from libs.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
+from libs.spotify.spotify_history.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",

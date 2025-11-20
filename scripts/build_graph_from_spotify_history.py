@@ -10,7 +10,7 @@ from libs.graph.graph_builders.graph_builder_pipeline import GraphBuilderPipelin
 from libs.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
 from libs.graph.graph_entity_collectors.graph_schema_builder import GraphSchemaBuilder
 from libs.graph.graph_entity_collectors.lastfm_entity_source import LastFMEntitySource
-from libs.spotify.spotify_history_dataframe import SpotifyHistoryDataFrame
+from libs.spotify.spotify_history.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",
