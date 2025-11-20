@@ -13,16 +13,15 @@ class PlaylistManager:
     def create_combined_playlist(
         self,
         combined_playlist_name: str,
-        playlist_ids: list[str] | list[str] | None = None,
+        playlist_ids: list[str] | None = None,
         playlist_names: list[str] | None = None,
     ):
-        if playlist_ids is None and playlist_names is None:
-            raise ValueError("Either playlist_ids or playlist_names must be provided")
-
         if playlist_ids is not None:
             tracks = self._combine_playlists_by_id(playlist_ids)
-        else:
+        elif playlist_names is not None:
             tracks = self._combine_playlists_by_name(playlist_names)
+        else:
+            raise ValueError("Either playlist_ids or playlist_names must be provided")
 
         if not self._playlist_exists(combined_playlist_name):
             playlist_dict = self.spotify_client.user_playlist_create(self.user_id, combined_playlist_name)
