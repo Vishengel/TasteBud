@@ -1,9 +1,10 @@
 from ensmallen import Graph
 
+from tastebud.graph.graph_builders.graph_builder_protocol import GraphBuilder
 from tastebud.graph.graph_dataclass import GraphSchema
 
 
-class GrapeGraphBuilder:
+class GrapeGraphBuilder(GraphBuilder):
     graph: Graph
 
     def build_graph(self, graph: GraphSchema) -> Graph:
