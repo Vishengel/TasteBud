@@ -1,7 +1,7 @@
 from polars import DataFrame
 from tqdm import tqdm
 
-from tastebud.graph.graph_entity_collectors.entity_relationship_source_protocol import EntityRelationshipSource
+from libs.graph.graph_entity_collectors.entity_relationship_source_protocol import EntityRelationshipSource
 
 
 class GraphEntityCollector:

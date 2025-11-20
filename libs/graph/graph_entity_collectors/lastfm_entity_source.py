@@ -1,5 +1,5 @@
-from tastebud.config import CONFIG
-from tastebud.lastfm.lastfm_client import LastFMClient
+from config import CONFIG
+from libs.lastfm.lastfm_client import LastFMClient
 
 
 class LastFMEntitySource:

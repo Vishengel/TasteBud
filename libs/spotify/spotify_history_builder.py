@@ -6,8 +6,8 @@ from polars import DataFrame, col, read_parquet
 from spotipy import Spotify
 from tqdm import tqdm
 
-from tastebud.config import CONFIG
-from tastebud.util.data_util import chunk_generator
+from config import CONFIG
+from libs.common.data_util import chunk_generator
 
 logger = logging.getLogger(__name__)
 

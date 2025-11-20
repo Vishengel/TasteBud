@@ -1,7 +1,7 @@
 from polars import concat
 
-from tastebud.graph.graph_dataclass import GraphSchema
-from tastebud.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
+from libs.graph.graph_dataclass import GraphSchema
+from libs.graph.graph_entity_collectors.graph_entity_collector import GraphEntityCollector
 
 
 class GraphSchemaBuilder:

@@ -1,8 +1,20 @@
 .venv
 .idea
-*/.env
-data
+.env
+*.pyc
+
+# caches
 */.cache
 cache/
-*.pyc
-*Source.gv*
+
+# data dir
+data/*
+!data/.gitkeep
+
+#output dir
+output/*
+!output/.gitkeep
+
+#output dir
+resources/*
+!resources/.gitkeep

@@ -4,7 +4,7 @@ import pylast
 from diskcache import Cache
 from pylast import MalformedResponseError, NetworkError, WSError
 
-from tastebud.config import CONFIG
+from config import CONFIG
 
 logger = logging.getLogger(__name__)
 

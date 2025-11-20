@@ -1,6 +1,6 @@
 from typing import Any, Protocol
 
-from tastebud.graph.graph_dataclass import GraphSchema
+from libs.graph.graph_dataclass import GraphSchema
 
 
 class GraphBuilder(Protocol):

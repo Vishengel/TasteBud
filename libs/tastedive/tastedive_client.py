@@ -3,8 +3,8 @@ from urllib.parse import quote
 
 from diskcache import Cache
 
-from tastebud.config import CONFIG
-from tastebud.util.query_util import TooManyRequestsError, httpx_get_request
+from config import CONFIG
+from libs.common.query_util import TooManyRequestsError, httpx_get_request
 
 
 class TastediveClient:

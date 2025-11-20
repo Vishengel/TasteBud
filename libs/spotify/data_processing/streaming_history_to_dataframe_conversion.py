@@ -3,8 +3,8 @@ from typing import Literal
 
 import polars as pl
 
-from tastebud.config import CONFIG
-from tastebud.util.file_util import get_files_in_dir, load_json_from_file, logger
+from config import CONFIG
+from libs.common.file_util import get_files_in_dir, load_json_from_file, logger
 
 
 def get_spotify_history_files_in_dir(
