@@ -20,3 +20,17 @@ class SpotifyClient(Spotify):
             )
         )
         self.current_user_id = self.current_user()["id"]
+
+    def fetch_all_playlists(self, user_id: str) -> list[dict]:
+        return self._fetch_paginated_items(self.user_playlists, user_id, limit=100)
+
+    def fetch_tracks_for_playlist(self, playlist_id: str) -> list[dict]:
+        return self._fetch_paginated_items(self.playlist_items, playlist_id)
+
+    def _fetch_paginated_items(self, fetch_function, *args, **kwargs) -> list[dict]:
+        items = []
+        result = fetch_function(*args, **kwargs)
+        items.extend(result["items"])
+        while result := self.next(result):
+            items.extend(result["items"])
+        return items

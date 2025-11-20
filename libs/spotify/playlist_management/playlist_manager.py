@@ -1,5 +1,3 @@
-from typing import Any
-
 from libs.spotify.data_model.playlist import Playlist
 from libs.spotify.data_model.track import Track
 from libs.spotify.spotify_client.spotify_client import SpotifyClient
@@ -65,29 +63,9 @@ class PlaylistManager:
         return name in self.name_to_id_map
 
     def _get_playlists(self) -> dict[str, Playlist]:
-        playlists = []
-        user_playlists_result = self.spotify_client.user_playlists(self.user_id, limit=100)
-        playlists.extend(self._get_playlist_from_results(user_playlists_result))
-
-        while user_playlists_result := self.spotify_client.next(user_playlists_result):
-            playlists.extend(self._get_playlist_from_results(user_playlists_result))
-
-        return {playlist.id: playlist for playlist in playlists}
+        raw_playlists = self.spotify_client.fetch_all_playlists(self.user_id)
+        return {playlist["id"]: Playlist.from_spotify_playlist_dict(playlist) for playlist in raw_playlists}
 
     def _get_tracks_for_playlist(self, playlist: Playlist) -> list[Track]:
-        tracks = []
-        tracks_for_playlist = self.spotify_client.playlist_items(playlist.id, limit=100)
-        tracks.extend(self._get_tracks_from_track_dict(tracks_for_playlist))
-
-        while tracks_for_playlist := self.spotify_client.next(tracks_for_playlist):
-            tracks.extend(self._get_tracks_from_track_dict(tracks_for_playlist))
-
-        return tracks
-
-    @staticmethod
-    def _get_playlist_from_results(user_playlists_result: dict[str, Any]):
-        return [Playlist.from_spotify_playlist_dict(playlist) for playlist in user_playlists_result["items"]]
-
-    @staticmethod
-    def _get_tracks_from_track_dict(tracks_for_playlist: dict[str, Any]):
-        return [Track.from_spotify_track_dict(track_dict) for track_dict in tracks_for_playlist["items"]]
+        raw_tracks = self.spotify_client.fetch_tracks_for_playlist(playlist.id)
+        return [Track.from_spotify_track_dict(track_dict) for track_dict in raw_tracks]
