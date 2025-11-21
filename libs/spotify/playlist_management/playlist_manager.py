@@ -34,6 +34,7 @@ class PlaylistManager:
         playlist_names: list[str] | None = None,
         combined_playlist_name: str | None = None,
     ):
+        # ToDo: not too happy with this, should be refactored
         if playlist_ids is not None:
             tracks = self._combine_playlists_by_id(playlist_ids)
         elif playlist_names is not None:
