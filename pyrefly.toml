@@ -45,3 +45,11 @@ permissive-ignores = false
 [errors]
 missing-import = false
 missing-attribute = false
+
+[[sub-config]]
+matches = "*/nicegui_ui/*"
+
+[sub-config.errors]
+unbound-name = false
+missing-import = false
+missing-attribute = false
