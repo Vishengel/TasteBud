@@ -1,8 +1,13 @@
 import uvicorn
 from nicegui import ui
 from nicegui.elements.table import Table
+from nicegui.events import GenericEventArguments
 
-from services.playlist_manager.server.app import app, get_playlists
+from libs.spotify.data_model.playlist import Playlist
+from services.playlist_manager.server.app import app, combine_playlists, get_playlists
+from services.playlist_manager.server.data_model import CombinePlaylistsRequest
+
+selected_playlists = []
 
 
 def _update_table(own_playlists_only: bool, table: Table, all_rows: list[dict], user_id: str):
@@ -14,6 +19,24 @@ def _update_table(own_playlists_only: bool, table: Table, all_rows: list[dict], 
     table.rows = filtered_rows
 
 
+async def _combine_playlists(user_id: str, playlists: list[Playlist]):
+    response = await combine_playlists(user_id, CombinePlaylistsRequest(playlists=playlists))
+    return response.combined_playlist
+
+
+def get_selected(table):
+    return [row for row in table.rows if row.get("_selected")]
+
+
+def update_selected_playlists(e: GenericEventArguments):
+    playlist = Playlist.model_validate(e.args["_playlist_object"])
+    if e.args["_selected"]:
+        selected_playlists.append(playlist)
+    else:
+        selected_playlists.remove(playlist)
+    print(selected_playlists)
+
+
 @ui.page("/")
 async def page():
     ui.page_title("Playlist Manager")
@@ -22,6 +45,7 @@ async def page():
     ui.switch("Dark mode", value=True).bind_value(dark, target_name="value")
 
     user_id = "vissert"
+    ui.input("Enter Spotify user name", value=user_id)
     playlists_response = await get_playlists(user_id)
     playlists = playlists_response.playlists
 
@@ -41,12 +65,45 @@ async def page():
         },
         {"name": "n_tracks", "label": "No. of Tracks", "field": "n_tracks", "sortable": True},
         {"name": "owner", "label": "Owner", "field": "owner", "sortable": True},
+        {"name": "combine", "label": "Combine", "field": "combine"},
     ]
     rows = [
-        {"idx": idx, "playlist_name": playlist.name, "n_tracks": playlist.n_tracks, "owner": playlist.owner_id}
+        {
+            "idx": idx,
+            "playlist_name": playlist.name,
+            "n_tracks": playlist.n_tracks,
+            "owner": playlist.owner_id,
+            "_playlist_object": playlist.model_dump(),
+        }
         for idx, playlist in enumerate(playlists)
     ]
-    table = ui.table(columns=columns, rows=rows, row_key="playlist_name")
+    table = ui.table(columns=columns, rows=rows, row_key="playlist_name", pagination=10)
+    table.add_slot(
+        "body",
+        r"""
+            <q-tr :props="props">
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    
+                    <template v-if="col.name !== 'combine'">
+                        {{ props.row[col.field] }}
+                    </template>
+                    
+                    <template v-else>
+                          <q-checkbox
+                            v-model="props.row._selected"
+                            size="xs"
+                            class="no-padding no-margin"
+                            toggle-order="tf"
+                            @update:model-value="(val) => $parent.$emit('row_selected_changed', props.row)"
+                          />
+                    </template>
+                </q-td>
+            </q-tr>
+        """,
+    )
+
+    table.on("row_selected_changed", update_selected_playlists)
+    ui.button("Combine selected playlists", on_click=lambda: _combine_playlists(user_id, selected_playlists))
 
 
 ui.run_with(app)

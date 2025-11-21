@@ -6,7 +6,11 @@ from fastapi import APIRouter, FastAPI
 
 from libs.spotify.playlist_management.playlist_manager import PlaylistManager
 from libs.spotify.spotify_client.spotify_client import SpotifyClient
-from services.playlist_manager.server.data_model import GetPlaylistsResponse
+from services.playlist_manager.server.data_model import (
+    CombinePlaylistsRequest,
+    CombinePlaylistsResponse,
+    GetPlaylistsResponse,
+)
 from services.playlist_manager.server.log_config import LOG_CONFIG
 
 logger = logging.getLogger(__name__)
@@ -27,9 +31,19 @@ def make_service():
 
 
 @router.get("/api/v1/playlists/{user_id}")
-async def get_playlists(user_id) -> GetPlaylistsResponse:
+async def get_playlists(user_id: str) -> GetPlaylistsResponse:
+    logger.info("Received request to get all playlists for user %s", user_id)
     playlists = app.state.playlist_manager.get_all_playlists_for_user_id(user_id)
     return GetPlaylistsResponse(user_id=user_id, playlists=playlists)
+
+
+@router.post("/api/v1/playlists/{user_id}/combine")
+async def combine_playlists(user_id: str, body: CombinePlaylistsRequest) -> CombinePlaylistsResponse:
+    logger.info("Received combine request for user %s to combine %d playlists", user_id, len(body.playlists))
+    combined_playlist = app.state.playlist_manager.create_combined_playlist(
+        user_id, [playlist.id for playlist in body.playlists]
+    )
+    return CombinePlaylistsResponse(combined_playlist=combined_playlist)
 
 
 app: FastAPI = make_service()

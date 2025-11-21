@@ -43,6 +43,7 @@ class PlaylistManager:
 
     def create_combined_playlist(
         self,
+        user_id: str,
         playlist_ids: list[str] | None = None,
         playlist_names: list[str] | None = None,
         combined_playlist_name: str | None = None,
@@ -63,21 +64,24 @@ class PlaylistManager:
         )
 
         if not self._playlist_exists(combined_playlist_name):
-            description_source = playlist_names if playlist_names else []
-            self.create_playlist(combined_playlist_name, _create_description(description_source))
+            description_source = []
+            if playlist_names:
+                description_source = playlist_names
+            elif playlist_ids:
+                description_source = [self.playlists[playlist_id].name for playlist_id in playlist_ids]
+            self.create_playlist(user_id, combined_playlist_name, _create_description(description_source))
 
-        self.spotify_client.playlist_replace_items(
-            self.name_to_id_map[combined_playlist_name], [track.uri for track in tracks]
-        )
+        combined_playlist_id = self.name_to_id_map[combined_playlist_name]
+        self.spotify_client.playlist_replace_items(combined_playlist_id, [track.uri for track in tracks])
+        return self.playlists[combined_playlist_id]
 
-    def create_playlist(self, name: str, description: str = "") -> None:
-        playlist_dict = self.spotify_client.user_playlist_create(
-            user=self.main_user_id, name=name, description=description
-        )
+    def create_playlist(self, user_id: str, name: str, description: str = "") -> Playlist:
+        playlist_dict = self.spotify_client.user_playlist_create(user=user_id, name=name, description=description)
         playlist = Playlist.from_spotify_playlist_dict(playlist_dict)
         playlist.generated_by_tastebud = True
         self.playlists[playlist.id] = playlist
         self.name_to_id_map[name] = playlist.id
+        return playlist
 
     def _combine_playlists(self, playlists: list[Playlist]) -> list[Track]:
         return [track for playlist in playlists for track in self.get_tracks_for_playlist_id(playlist.id)]

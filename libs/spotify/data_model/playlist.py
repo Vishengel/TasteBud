@@ -36,3 +36,6 @@ class Playlist(BaseModel):
         if value is None:
             return CONFIG.tastebud_playlist_watermark in info.data["description"]
         return value
+
+    def __hash__(self):
+        return hash(self.id)
