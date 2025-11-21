@@ -1,0 +1,40 @@
+import logging
+import logging.config
+
+import uvicorn
+from fastapi import APIRouter, FastAPI
+
+from libs.spotify.playlist_management.playlist_manager import PlaylistManager
+from libs.spotify.spotify_client.spotify_client import SpotifyClient
+from services.playlist_manager.server.data_model import GetPlaylistsResponse
+from services.playlist_manager.server.log_config import LOG_CONFIG
+
+logger = logging.getLogger(__name__)
+logging.config.dictConfig(LOG_CONFIG)
+router = APIRouter()
+
+
+def make_service():
+    app_service = FastAPI(title="Playlist Manager Service")
+    logger.info("Starting %s...", app_service.title)
+
+    spotify_client = SpotifyClient()
+    app_service.state.playlist_manager = PlaylistManager(spotify_client)
+    app_service.include_router(router)
+
+    logger.info("Startup done.")
+    return app_service
+
+
+@router.get("/api/v1/playlists/{user_id}")
+async def get_playlists(user_id) -> GetPlaylistsResponse:
+    playlists = app.state.playlist_manager.get_all_playlists_for_user_id(user_id)
+    return GetPlaylistsResponse(user_id=user_id, playlists=playlists)
+
+
+app: FastAPI = make_service()
+__all__ = ["app"]
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -26,3 +26,11 @@ repos:
         name: Pyrefly (type checking)
         pass_filenames: false
         additional_dependencies: ["pyrefly==0.42.2"]
+#  - repo: local
+#    hooks:
+#      - id: api-spec
+#        name: api-spec
+#        entry: uv run python scripts/generate_openapi.py
+#        language: system
+#        pass_filenames: false
+#        always_run: true

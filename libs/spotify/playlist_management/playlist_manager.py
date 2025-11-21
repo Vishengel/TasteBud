@@ -1,4 +1,5 @@
 from datetime import datetime
+from functools import cached_property
 
 from config import CONFIG
 from libs.spotify.data_model.playlist import Playlist
@@ -24,9 +25,21 @@ def _create_description(playlist_names: list[str]) -> str:
 class PlaylistManager:
     def __init__(self, spotify_client: SpotifyClient, user_id: str | None = None):
         self.spotify_client = spotify_client
-        self.user_id = user_id if user_id is not None else self.spotify_client.current_user_id
-        self.playlists = self._get_playlists()
+        self.main_user_id = user_id if user_id is not None else self.spotify_client.current_user_id
+        self.playlists = self._get_playlists_dict()
         self.name_to_id_map = {playlist.name: playlist.id for playlist in self.playlists.values()}
+
+    @cached_property
+    def playlists_for_main_user(self) -> list[Playlist]:
+        return self.get_all_playlists_for_user_id(self.main_user_id)
+
+    def get_all_playlists_for_user_id(self, user_id: str) -> list[Playlist]:
+        raw_playlists = self.spotify_client.fetch_all_playlists(user_id)
+        return [Playlist.from_spotify_playlist_dict(playlist) for playlist in raw_playlists]
+
+    def get_tracks_for_playlist_id(self, playlist_id: str) -> list[Track]:
+        raw_tracks = self.spotify_client.fetch_tracks_for_playlist(playlist_id)
+        return [Track.from_spotify_track_dict(track_dict) for track_dict in raw_tracks]
 
     def create_combined_playlist(
         self,
@@ -58,14 +71,16 @@ class PlaylistManager:
         )
 
     def create_playlist(self, name: str, description: str = "") -> None:
-        playlist_dict = self.spotify_client.user_playlist_create(user=self.user_id, name=name, description=description)
+        playlist_dict = self.spotify_client.user_playlist_create(
+            user=self.main_user_id, name=name, description=description
+        )
         playlist = Playlist.from_spotify_playlist_dict(playlist_dict)
         playlist.generated_by_tastebud = True
         self.playlists[playlist.id] = playlist
         self.name_to_id_map[name] = playlist.id
 
     def _combine_playlists(self, playlists: list[Playlist]) -> list[Track]:
-        return [track for playlist in playlists for track in self._get_tracks_for_playlist(playlist)]
+        return [track for playlist in playlists for track in self.get_tracks_for_playlist_id(playlist.id)]
 
     def _combine_playlists_by_id(self, playlist_ids: list[str]) -> list[Track]:
         return self._combine_playlists([self._find_playlist_by_id(playlist_id) for playlist_id in playlist_ids])
@@ -87,10 +102,5 @@ class PlaylistManager:
     def _playlist_exists(self, name: str) -> bool:
         return name in self.name_to_id_map
 
-    def _get_playlists(self) -> dict[str, Playlist]:
-        raw_playlists = self.spotify_client.fetch_all_playlists(self.user_id)
-        return {playlist["id"]: Playlist.from_spotify_playlist_dict(playlist) for playlist in raw_playlists}
-
-    def _get_tracks_for_playlist(self, playlist: Playlist) -> list[Track]:
-        raw_tracks = self.spotify_client.fetch_tracks_for_playlist(playlist.id)
-        return [Track.from_spotify_track_dict(track_dict) for track_dict in raw_tracks]
+    def _get_playlists_dict(self) -> dict[str, Playlist]:
+        return {playlist.id: playlist for playlist in self.playlists_for_main_user}
