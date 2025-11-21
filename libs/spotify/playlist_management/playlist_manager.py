@@ -16,6 +16,8 @@ def _create_default_combined_playlist_name() -> str:
 
 
 def _create_description(playlist_names: list[str]) -> str:
+    if len(playlist_names) == 0:
+        return CONFIG.tastebud_playlist_watermark
     return f"{' + '.join(playlist_names)}. {CONFIG.tastebud_playlist_watermark}"
 
 
@@ -43,11 +45,12 @@ class PlaylistManager:
         combined_playlist_name = (
             _mark_combined_playlist_name(combined_playlist_name)
             if combined_playlist_name
-            else _create_default_combined_playlist_name(playlist_names)
+            else _create_default_combined_playlist_name()
         )
 
         if not self._playlist_exists(combined_playlist_name):
-            self.create_playlist(combined_playlist_name, _create_description(playlist_names))
+            description_source = playlist_names if playlist_names else []
+            self.create_playlist(combined_playlist_name, _create_description(description_source))
 
         self.spotify_client.playlist_replace_items(
             self.name_to_id_map[combined_playlist_name], [track.uri for track in tracks]
