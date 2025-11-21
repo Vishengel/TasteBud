@@ -4,6 +4,7 @@ from typing import ClassVar
 from spotipy import CacheFileHandler, Spotify, SpotifyOAuth
 
 from config import CONFIG
+from libs.common.data_util import chunk_generator
 
 
 class SpotifyClient(Spotify):
@@ -13,6 +14,7 @@ class SpotifyClient(Spotify):
         "playlist-modify-public",
         "playlist-modify-private",
     ]
+    PUT_ITEM_LIMIT: ClassVar[int] = 100
 
     def __init__(self):
         super().__init__(
@@ -29,7 +31,11 @@ class SpotifyClient(Spotify):
         return self._fetch_paginated_items(self.user_playlists, user_id, limit=100)
 
     def fetch_tracks_for_playlist(self, playlist_id: str) -> list[dict]:
-        return self._fetch_paginated_items(self.playlist_tracks, playlist_id, limit=100)
+        return self._fetch_paginated_items(self.playlist_items, playlist_id, limit=100)
+
+    def replace_tracks_in_playlist(self, playlist_id: str, track_uris: list[str]):
+        for chunk in chunk_generator(iterable=track_uris, n=self.PUT_ITEM_LIMIT):
+            self.playlist_replace_items(playlist_id, chunk)
 
     def _fetch_paginated_items(self, fetch_function: Callable, *args, **kwargs) -> list[dict]:
         items = []

@@ -72,7 +72,7 @@ class PlaylistManager:
             self.create_playlist(user_id, combined_playlist_name, _create_description(description_source))
 
         combined_playlist_id = self.name_to_id_map[combined_playlist_name]
-        self.spotify_client.playlist_replace_items(combined_playlist_id, [track.uri for track in tracks])
+        self.spotify_client.replace_tracks_in_playlist(combined_playlist_id, [track.uri for track in tracks])
         return self.playlists[combined_playlist_id]
 
     def create_playlist(self, user_id: str, name: str, description: str = "") -> Playlist:
