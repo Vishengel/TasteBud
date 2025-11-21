@@ -1,6 +1,22 @@
+from datetime import datetime
+
+from config import CONFIG
 from libs.spotify.data_model.playlist import Playlist
 from libs.spotify.data_model.track import Track
 from libs.spotify.spotify_client.spotify_client import SpotifyClient
+
+
+def _mark_combined_playlist_name(combined_playlist_name: str) -> str:
+    return f"[AUTO] {combined_playlist_name}"
+
+
+def _create_default_combined_playlist_name(playlist_names: list[str]) -> str:
+    date = datetime.today().strftime("%Y-%m-%d")
+    return _mark_combined_playlist_name(f"Combined Playlist {date}")
+
+
+def _create_description(playlist_names: list[str]) -> str:
+    return f"{' + '.join(playlist_names)}. {CONFIG.tastebud_playlist_watermark}"
 
 
 class PlaylistManager:
@@ -12,9 +28,9 @@ class PlaylistManager:
 
     def create_combined_playlist(
         self,
-        combined_playlist_name: str,
         playlist_ids: list[str] | None = None,
         playlist_names: list[str] | None = None,
+        combined_playlist_name: str | None = None,
     ):
         if playlist_ids is not None:
             tracks = self._combine_playlists_by_id(playlist_ids)
@@ -23,18 +39,24 @@ class PlaylistManager:
         else:
             raise ValueError("Either playlist_ids or playlist_names must be provided")
 
+        # ToDo: this silently fails if multiple playlists are created on the same date without providing a name
+        combined_playlist_name = (
+            _mark_combined_playlist_name(combined_playlist_name)
+            if combined_playlist_name
+            else _create_default_combined_playlist_name(playlist_names)
+        )
+
         if not self._playlist_exists(combined_playlist_name):
-            playlist_dict = self.spotify_client.user_playlist_create(self.user_id, combined_playlist_name)
-            playlist = Playlist.from_spotify_playlist_dict(playlist_dict)
-            self.playlists[playlist.id] = playlist
-            self.name_to_id_map[combined_playlist_name] = playlist.id
+            self.create_playlist(combined_playlist_name, _create_description(playlist_names))
 
         self.spotify_client.playlist_replace_items(
             self.name_to_id_map[combined_playlist_name], [track.uri for track in tracks]
         )
 
-    def _create_playlist(self, name: str) -> None:
-        playlist = self.spotify_client.user_playlist_create(self.user_id, name)
+    def create_playlist(self, name: str, description: str = "") -> None:
+        playlist_dict = self.spotify_client.user_playlist_create(user=self.user_id, name=name, description=description)
+        playlist = Playlist.from_spotify_playlist_dict(playlist_dict)
+        playlist.generated_by_tastebud = True
         self.playlists[playlist.id] = playlist
         self.name_to_id_map[name] = playlist.id
 
