@@ -10,7 +10,7 @@ def _mark_combined_playlist_name(combined_playlist_name: str) -> str:
     return f"[AUTO] {combined_playlist_name}"
 
 
-def _create_default_combined_playlist_name(playlist_names: list[str]) -> str:
+def _create_default_combined_playlist_name() -> str:
     date = datetime.today().strftime("%Y-%m-%d")
     return _mark_combined_playlist_name(f"Combined Playlist {date}")
 

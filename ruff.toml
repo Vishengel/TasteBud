@@ -24,12 +24,13 @@ exclude = [
 # B: flake8-bugbear
 # A: flake8-builtins
 # C4: flake8-comprehensions
+# ARG: flake8-unused-arguments
 # PTH: flake8-use-pathlib
 # UP: pyupgrade
 # D: pydocstyle
 # I: isort-equivalent import sorting
 # RUF: Ruff-specific (e.g., unused noqa)
-select = ["E", "F", "B", "A", "C4", "PTH", "UP", "D", "I", "RUF"]
+select = ["E", "F", "B", "A", "C4", "ARG", "PTH", "UP", "D", "I", "RUF"]
 
 # - E203 to be compatible with Black-style formatting
 # - Allow plain open() calls (equivalent of the PL123 note -> Ruff's PLR1732)
