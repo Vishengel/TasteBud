@@ -12,6 +12,7 @@ from services.playlist_manager.server.data_model import (
     CombinePlaylistsResponse,
     GetPlaylistsResponse,
 )
+from services.playlist_manager.server.exception_handlers import spotify_exception_handler
 from services.playlist_manager.server.log_config import LOG_CONFIG
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,8 @@ def make_service():
     spotify_client = SpotifyClient()
     app_service.state.playlist_manager = PlaylistManager(spotify_client)
     app_service.include_router(router)
+
+    app_service.add_exception_handler(SpotifyException, spotify_exception_handler)
 
     logger.info("Startup done.")
     return app_service

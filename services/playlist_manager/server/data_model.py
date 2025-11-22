@@ -14,3 +14,8 @@ class CombinePlaylistsRequest(BaseModel):
 
 class CombinePlaylistsResponse(BaseModel):
     combined_playlist: Playlist
+
+
+class ErrorResponse(BaseModel):
+    code: int
+    reason: str

@@ -29,6 +29,10 @@ class PlaylistTable:
         self._install_body_slot()
         self.table.on("row_selected_changed", self.on_select_changed)
 
+    @property
+    def has_rows(self) -> bool:
+        return len(self.rows) > 0
+
     def update(self):
         self.table.rows = self.rows
         self.table.columns = self.columns

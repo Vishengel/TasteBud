@@ -18,6 +18,7 @@ class PlaylistsPage:
         try:
             response = await get_playlists(self.user_id)
         except HTTPException:
+            ui.notify(f'No playlists found for user "{self.user_id}"', type="negative", icon="warning", timeout=3000)
             return []
         return [
             {
@@ -32,7 +33,7 @@ class PlaylistsPage:
         ]
 
     async def update_playlists(self, e: GenericEventArguments):
-        self.user_id = e.args
+        self.user_id = e.sender.value
         if self.user_id:
             rows = await self.load_playlists()
             self.table.set_rows(rows)
@@ -65,9 +66,12 @@ class PlaylistsPage:
             ui.button("Combine selected", on_click=self.combine)
 
         ui.label("Playlist Manager").classes("text-h2").style("color: #6E93D6")
-        username_input = ui.input("Username", placeholder="Enter username")
-        username_input.on("update:model-value", self.update_playlists, throttle=1.0, leading_events=False)
-        ui.label(f"All playlists for user {self.user_id}")
+        (
+            ui.input("Username", placeholder="Enter username")
+            .on("blur", self.update_playlists)
+            .on("keydown.enter", self.update_playlists)
+        )
+        showing_playlists_label = ui.label()
 
         ui.checkbox(
             "User-owned only",
@@ -75,3 +79,8 @@ class PlaylistsPage:
         )
 
         self.table = PlaylistTable([], self.on_select_changed)
+        (
+            showing_playlists_label.bind_text_from(
+                self, "user_id", lambda user_id: f"Showing all playlists for user {user_id}"
+            ).bind_visibility_from(self.table, "has_rows")
+        )
