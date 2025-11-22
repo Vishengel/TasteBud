@@ -6,20 +6,24 @@ requires-python = ">=3.12"
 dependencies = [
     "diskcache>=5.6.3",
     "fastapi>=0.121.3",
-    "grape>=0.2.5",
-    "graphviz>=0.21",
     "httpx>=0.28.1",
     "nicegui>=3.3.1",
-    "polars>=1.32.3",
-    "pyarrow>=22.0.0",
     "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",
-    "pylast>=6.0.0",
     "python-dotenv>=1.1.1",
     "python-json-logger>=4.0.0",
     "requests>=2.32.5",
-    "spotipy>=2.25.1",
     "tqdm>=4.67.1",
+]
+
+[dependency-groups]
+dev = [
+    "grape>=0.2.5",
+    "graphviz>=0.21",
+    "pylast>=6.0.0",
+    "polars>=1.32.3",
+    "pyarrow>=22.0.0",
+    "spotipy>=2.25.1",
 ]
 
 [tool.ruff]
