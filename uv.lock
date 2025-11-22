@@ -2197,6 +2197,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "python-json-logger" },
     { name = "requests" },
+    { name = "spotipy" },
     { name = "tqdm" },
 ]
 
@@ -2207,7 +2208,6 @@ dev = [
     { name = "polars" },
     { name = "pyarrow" },
     { name = "pylast" },
-    { name = "spotipy" },
 ]
 
 [package.metadata]
@@ -2221,6 +2221,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "python-json-logger", specifier = ">=4.0.0" },
     { name = "requests", specifier = ">=2.32.5" },
+    { name = "spotipy", specifier = ">=2.25.1" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
@@ -2231,7 +2232,6 @@ dev = [
     { name = "polars", specifier = ">=1.32.3" },
     { name = "pyarrow", specifier = ">=22.0.0" },
     { name = "pylast", specifier = ">=6.0.0" },
-    { name = "spotipy", specifier = ">=2.25.1" },
 ]
 
 [[package]]

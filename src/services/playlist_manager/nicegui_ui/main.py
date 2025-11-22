@@ -5,7 +5,7 @@ from src.services.playlist_manager.nicegui_ui.pages.playlists_page import Playli
 from src.services.playlist_manager.server.app import app
 
 
-@ui.page("/")
+@ui.page("/playlist-manager")
 async def page():
     manager = PlaylistsPage()
     await manager.create()
