@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from libs.spotify.data_model.playlist import Playlist
 
@@ -19,3 +19,7 @@ class CombinePlaylistsResponse(BaseModel):
 class ErrorResponse(BaseModel):
     code: int
     reason: str
+
+
+class HealthResponse(BaseModel):
+    message: str = Field("This is a static response indicating the server is responsive.")

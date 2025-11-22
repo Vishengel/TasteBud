@@ -11,6 +11,7 @@ from services.playlist_manager.server.data_model import (
     CombinePlaylistsRequest,
     CombinePlaylistsResponse,
     GetPlaylistsResponse,
+    HealthResponse,
 )
 from services.playlist_manager.server.exception_handlers import spotify_exception_handler
 from services.playlist_manager.server.log_config import LOG_CONFIG
@@ -60,6 +61,11 @@ async def combine_playlists(user_id: str, body: CombinePlaylistsRequest) -> Comb
             status_code=exc.code, detail=f"Error fetching playlists for user {user_id}: {exc.reason}"
         ) from exc
     return CombinePlaylistsResponse(combined_playlist=combined_playlist)
+
+
+@router.get("/health")
+def health_check() -> HealthResponse:
+    return HealthResponse()
 
 
 app: FastAPI = make_service()
