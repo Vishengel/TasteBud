@@ -10,7 +10,7 @@ class PlaylistTable:
         self.rows = rows
         self.on_select_changed = on_select_changed
 
-        columns = [
+        self.columns = [
             {"name": "idx", "label": "Index", "field": "idx", "required": True, "align": "left", "sortable": True},
             {
                 "name": "playlist_name",
@@ -25,19 +25,25 @@ class PlaylistTable:
             {"name": "combine", "label": "Combine", "field": "combine", "align": "center"},
         ]
 
-        self.table: Table = ui.table(columns=columns, rows=self.rows, row_key="playlist_name")
+        self.table: Table = ui.table(columns=self.columns, rows=self.rows, row_key="playlist_name")
         self._install_body_slot()
         self.table.on("row_selected_changed", self.on_select_changed)
 
     def update(self):
+        self.table.rows = self.rows
+        self.table.columns = self.columns
         self.table.update()
 
-    def filter_by_owner(self, only_owned: bool, user_id: str):
-        if only_owned:
-            self.table.rows = [r for r in self.rows if r["owner"] == user_id]
+    def set_rows(self, rows: list[dict]):
+        self.rows = rows
+        self.update()
+
+    def filter_by_owner(self, show_only_playlists_by_user: bool, user_id: str):
+        if show_only_playlists_by_user:
+            self.rows = [r for r in self.rows if r["owner"] == user_id]
         else:
-            self.table.rows = self.rows
-        self.table.update()
+            self.rows = self.rows
+        self.update()
 
     def _install_body_slot(self):
         self.table.add_slot(

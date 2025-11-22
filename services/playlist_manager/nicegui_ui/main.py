@@ -7,7 +7,7 @@ from services.playlist_manager.server.app import app
 
 @ui.page("/")
 async def page():
-    manager = PlaylistsPage("vissert")
+    manager = PlaylistsPage()
     await manager.create()
 
 
