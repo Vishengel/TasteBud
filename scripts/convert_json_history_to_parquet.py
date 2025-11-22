@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from libs.spotify.spotify_history.data_processing.streaming_history_to_dataframe_conversion import (
+from src.libs.spotify.spotify_history.data_processing.streaming_history_to_dataframe_conversion import (
     convert_streaming_history_to_dataframe,
 )
 

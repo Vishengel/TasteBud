@@ -7,7 +7,7 @@ from pkgutil import iter_modules
 
 from dotenv import dotenv_values
 
-import services
+from src import services
 
 
 def projects_with_server(base_dir: str) -> list[str]:

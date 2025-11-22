@@ -1,7 +1,7 @@
 import argparse
 
-from libs.spotify.playlist_management.playlist_manager import PlaylistManager
-from libs.spotify.spotify_client.spotify_client import SpotifyClient
+from src.libs.spotify.playlist_management.playlist_manager import PlaylistManager
+from src.libs.spotify.spotify_client.spotify_client import SpotifyClient
 
 
 def get_args():

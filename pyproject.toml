@@ -26,10 +26,6 @@ dev = [
     "spotipy>=2.25.1",
 ]
 
-[tool.uv.sources]
-services = { path = "services" }
-libs = { path = "libs" }
-
 [tool.ruff]
 line-length = 120
 
