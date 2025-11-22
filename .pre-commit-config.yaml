@@ -8,7 +8,7 @@ repos:
         name: uv-lock
       - id: uv-export
         name: uv-export
-        args: [ "-o", "services/playlist_manager/requirements.txt", "--no-dev" ]
+        args: [ "-o", "src/services/playlist_manager/requirements.txt", "--no-dev" ]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.12.11
