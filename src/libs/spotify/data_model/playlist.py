@@ -1,7 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, field_validator
-from pydantic_core.core_schema import ValidationInfo
+from pydantic import BaseModel, model_validator
 
 from config import CONFIG
 
@@ -30,12 +29,11 @@ class Playlist(BaseModel):
             owner_id=spotify_playlist_dict["owner"]["id"],
         )
 
-    @field_validator("generated_by_tastebud", mode="after")
-    @classmethod
-    def set_generated_by_tastebud(cls, value: bool | None, info: ValidationInfo):
-        if value is None:
-            return CONFIG.tastebud_playlist_watermark in info.data["description"]
-        return value
+    @model_validator(mode="after")
+    def set_generated_by_tastebud(self):
+        if self.generated_by_tastebud is None:
+            self.generated_by_tastebud = CONFIG.tastebud_playlist_watermark in self.description
+        return self
 
     def __hash__(self):
         return hash(self.id)

@@ -8,35 +8,42 @@ from src.services.playlist_manager.server.app import combine_playlists, get_play
 from src.services.playlist_manager.server.data_model import CombinePlaylistsRequest
 
 
+def _get_table_rows(playlists: list[Playlist], return_tastebud_playlists: bool = False):
+    filtered_playlists = [pl for pl in playlists if pl.generated_by_tastebud == return_tastebud_playlists]
+    return [
+        {
+            "idx": idx,
+            "playlist_name": pl.name,
+            "n_tracks": pl.n_tracks,
+            "owner": pl.owner_id,
+            "_playlist_object": pl.model_dump(),
+            "_selected": False,
+        }
+        for idx, pl in enumerate(filtered_playlists, start=1)
+    ]
+
+
 class PlaylistsPage:
     def __init__(self):
         self.user_id: str | None = None
         self.selected = []
-        self.table: PlaylistTable | None = None
+        self.main_table: PlaylistTable | None = None
+        self.combined_playlist_table: PlaylistTable | None = None
 
-    async def load_playlists(self) -> list[dict]:
+    async def load_playlists(self) -> list[Playlist]:
         try:
             response = await get_playlists(self.user_id)
         except HTTPException:
             ui.notify(f'No playlists found for user "{self.user_id}"', type="negative", icon="warning", timeout=3000)
             return []
-        return [
-            {
-                "idx": idx,
-                "playlist_name": pl.name,
-                "n_tracks": pl.n_tracks,
-                "owner": pl.owner_id,
-                "_playlist_object": pl.model_dump(),
-                "_selected": False,
-            }
-            for idx, pl in enumerate(response.playlists)
-        ]
+        return response.playlists
 
     async def update_playlists(self, e: GenericEventArguments):
         self.user_id = e.sender.value
         if self.user_id:
-            rows = await self.load_playlists()
-            self.table.set_rows(rows)
+            playlists = await self.load_playlists()
+            self.main_table.set_rows(_get_table_rows(playlists, return_tastebud_playlists=False))
+            self.combined_playlist_table.set_rows(_get_table_rows(playlists, return_tastebud_playlists=True))
 
     def on_select_changed(self, e: GenericEventArguments):
         pl_dict = e.args["_playlist_object"]
@@ -51,9 +58,9 @@ class PlaylistsPage:
         result = await combine_playlists(self.user_id, CombinePlaylistsRequest(playlists=self.selected))
         self.selected.clear()
 
-        for row in self.table.rows:
+        for row in self.main_table.rows:
             row["_selected"] = False
-        self.table.update()
+        self.main_table.update()
 
         return result
 
@@ -75,12 +82,21 @@ class PlaylistsPage:
 
         ui.checkbox(
             "User-owned only",
-            on_change=lambda e: self.table.filter_by_owner(e.value, self.user_id),
+            on_change=lambda e: self.main_table.filter_by_owner(e.value, self.user_id),
         )
+        with ui.row().classes("w-full h-full no-wrap gap-4"):
+            with ui.column().classes("w-2/3 h-[70vh] overflow-hidden"):
+                ui.label("User-managed Playlists")
+                self.main_table = PlaylistTable([], self.on_select_changed)
+                self.main_table.table.classes("h-full overflow-y-auto whitespace-normal break-words")
 
-        self.table = PlaylistTable([], self.on_select_changed)
+            with ui.column().classes("w-1/3 h-[70vh] overflow-hidden"):
+                ui.label("Tastebud-managed Playlists")
+                self.combined_playlist_table = PlaylistTable([], self.on_select_changed)
+                self.combined_playlist_table.table.classes("h-full overflow-y-auto whitespace-normal break-words")
+
         (
             showing_playlists_label.bind_text_from(
                 self, "user_id", lambda user_id: f"Showing all playlists for user {user_id}"
-            ).bind_visibility_from(self.table, "has_rows")
+            ).bind_visibility_from(self.main_table, "has_rows")
         )

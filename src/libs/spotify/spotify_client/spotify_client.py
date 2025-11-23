@@ -14,7 +14,8 @@ class SpotifyClient(Spotify):
         "playlist-modify-public",
         "playlist-modify-private",
     ]
-    PUT_ITEM_LIMIT: ClassVar[int] = 100
+    GET_ITEM_LIMIT: ClassVar[int] = 50  # Spotify API allows up to 50 items per get request
+    PUT_ITEM_LIMIT: ClassVar[int] = 100  # Spotify API allows up to 100 items per put request
 
     def __init__(self):
         super().__init__(
@@ -28,11 +29,12 @@ class SpotifyClient(Spotify):
         return self.current_user()["id"]
 
     def fetch_all_playlists(self, user_id: str) -> list[dict]:
-        return self._fetch_paginated_items(self.user_playlists, user_id, limit=100)
+        return self._fetch_paginated_items(self.user_playlists, user_id, limit=self.GET_ITEM_LIMIT)
 
     def fetch_tracks_for_playlist(self, playlist_id: str) -> list[dict]:
-        return self._fetch_paginated_items(self.playlist_items, playlist_id, limit=100)
+        return self._fetch_paginated_items(self.playlist_items, playlist_id, limit=self.GET_ITEM_LIMIT)
 
+    # ToDo: This makes no sense: each iteration replaces the previous one. Stupid dumb
     def replace_tracks_in_playlist(self, playlist_id: str, track_uris: list[str]):
         for chunk in chunk_generator(iterable=track_uris, n=self.PUT_ITEM_LIMIT):
             self.playlist_replace_items(playlist_id, chunk)
