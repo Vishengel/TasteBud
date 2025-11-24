@@ -34,10 +34,10 @@ class SpotifyClient(Spotify):
     def fetch_tracks_for_playlist(self, playlist_id: str) -> list[dict]:
         return self._fetch_paginated_items(self.playlist_items, playlist_id, limit=self.GET_ITEM_LIMIT)
 
-    # ToDo: This makes no sense: each iteration replaces the previous one. Stupid dumb
     def replace_tracks_in_playlist(self, playlist_id: str, track_uris: list[str]):
+        self.playlist_replace_items(playlist_id, [])
         for chunk in chunk_generator(iterable=track_uris, n=self.PUT_ITEM_LIMIT):
-            self.playlist_replace_items(playlist_id, chunk)
+            self.playlist_add_items(playlist_id, chunk)
 
     def _fetch_paginated_items(self, fetch_function: Callable, *args, **kwargs) -> list[dict]:
         items = []
