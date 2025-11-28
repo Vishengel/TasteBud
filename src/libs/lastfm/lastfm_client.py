@@ -1,8 +1,7 @@
 import logging
 
-import pylast
 from diskcache import Cache
-from pylast import MalformedResponseError, NetworkError, WSError
+from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError, md5
 
 from config import CONFIG
 
@@ -13,8 +12,8 @@ class LastFMClient:
     artist_cache = Cache(CONFIG.cache_dir / "lastfm_similar_artists")
 
     def __init__(self, api_key: str, api_secret: str, username: str, password: str):
-        self.network = pylast.LastFMNetwork(
-            api_key=api_key, api_secret=api_secret, username=username, password_hash=pylast.md5(password)
+        self.network = LastFMNetwork(
+            api_key=api_key, api_secret=api_secret, username=username, password_hash=md5(password)
         )
 
     def get_similar_artists(self, artist_name: str, limit: int | None = 10) -> list[str]:
