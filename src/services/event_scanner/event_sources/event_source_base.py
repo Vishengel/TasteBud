@@ -9,4 +9,6 @@ class EventSourceType(str, Enum):
 
 
 class EventSource(Protocol):
+    event_source_type: EventSourceType
+
     def get_events(self) -> list[Event]: ...
