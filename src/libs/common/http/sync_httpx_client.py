@@ -3,8 +3,8 @@ import logging
 import httpx
 from httpx import Client, HTTPStatusError, RequestError
 
-from src.libs.common.exceptions.http_exceptions import TOO_MANY_REQUESTS_ERROR_CODE, TooManyRequestsError
-from src.libs.common.web.http_client import HttpResponse, SyncHttpClient
+from libs.common.http.exceptions import TOO_MANY_REQUESTS_ERROR_CODE, TooManyRequestsError
+from src.libs.common.http.http_client import HttpResponse, SyncHttpClient
 
 logger = logging.getLogger(__name__)
 
@@ -13,9 +13,11 @@ class SyncHTTPXClient(SyncHttpClient):
     def __init__(self, timeout: int = 10):
         self.client = Client(timeout=timeout)
 
-    def get(self, url: str) -> HttpResponse | None:
+    def get(
+        self, url: str, params: dict | None = None, headers: dict | None = None, cookies: dict | None = None
+    ) -> HttpResponse | None:
         try:
-            response = self.client.get(url)
+            response = self.client.get(url=url, params=params, headers=headers, cookies=cookies)
             response.raise_for_status()
         except RequestError as e:
             logger.error(f"An error occurred while making the request: {e}")
