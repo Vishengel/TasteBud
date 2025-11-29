@@ -8,19 +8,20 @@ from src.services.playlist_manager.server.app import combine_playlists, get_play
 from src.services.playlist_manager.server.data_model import CombinePlaylistsRequest
 
 
+def _playlist_to_row(idx: int, playlist: Playlist):
+    return {
+        "idx": idx,
+        "playlist_name": playlist.name,
+        "n_tracks": playlist.n_tracks,
+        "owner": playlist.owner_id,
+        "_playlist_object": playlist.model_dump(),
+        "_selected": False,
+    }
+
+
 def _get_table_rows(playlists: list[Playlist], return_tastebud_playlists: bool = False):
     filtered_playlists = [pl for pl in playlists if pl.generated_by_tastebud == return_tastebud_playlists]
-    return [
-        {
-            "idx": idx,
-            "playlist_name": pl.name,
-            "n_tracks": pl.n_tracks,
-            "owner": pl.owner_id,
-            "_playlist_object": pl.model_dump(),
-            "_selected": False,
-        }
-        for idx, pl in enumerate(filtered_playlists, start=1)
-    ]
+    return [_playlist_to_row(idx, pl) for idx, pl in enumerate(filtered_playlists, start=1)]
 
 
 class PlaylistsPage:
@@ -61,6 +62,11 @@ class PlaylistsPage:
         for row in self.main_table.rows:
             row["_selected"] = False
         self.main_table.update()
+
+        self.combined_playlist_table.rows.append(
+            _playlist_to_row(len(self.combined_playlist_table.rows) + 1, result.combined_playlist)
+        )
+        self.combined_playlist_table.update()
 
         return result
 
