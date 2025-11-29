@@ -17,6 +17,7 @@ exclude = [
   "build",
   "dist",
   "__pycache__",
+  "scratch"
 ]
 
 [lint]

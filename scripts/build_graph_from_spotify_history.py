@@ -35,7 +35,7 @@ def build_graph_from_spotify_history(spotify_history_df: SpotifyHistoryDataFrame
 
     schema_builder = GraphSchemaBuilder([lastfm_builder])
 
-    pipeline = GraphBuilderPipeline(schema_builder, GrapeGraphBuilder)
+    pipeline = GraphBuilderPipeline(schema_builder, GrapeGraphBuilder())
     graph = pipeline.build(spotify_history_df)
 
     return graph

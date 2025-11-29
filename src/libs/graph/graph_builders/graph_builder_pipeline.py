@@ -4,16 +4,15 @@ from src.libs.spotify.spotify_history.spotify_history_dataframe import SpotifyHi
 
 
 class GraphBuilderPipeline:
-    def __init__(self, schema_builder: GraphSchemaBuilder, graph_builder_class: type[GraphBuilder]):
+    def __init__(self, schema_builder: GraphSchemaBuilder, graph_builder: GraphBuilder):
         self.schema_builder = schema_builder
-        self.graph_builder_class = graph_builder_class
+        self.graph_builder = graph_builder
 
     def build(self, spotify_history: SpotifyHistoryDataFrame):
         unique_artists = set(spotify_history.get_eligible_artists().to_list())
 
         graph_schema = self.schema_builder.create_schema(unique_artists)
 
-        graph_builder = self.graph_builder_class()
-        graph_builder.build_graph(graph_schema)
+        self.graph_builder.build_graph(graph_schema)
 
-        return graph_builder.graph
+        return self.graph_builder.graph

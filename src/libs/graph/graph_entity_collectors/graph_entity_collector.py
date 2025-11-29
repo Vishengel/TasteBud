@@ -10,9 +10,8 @@ class GraphEntityCollector:
 
     @staticmethod
     def _clean_label(label: str) -> str:
-        """Sanitize node or edge labels to avoid Graphviz syntax issues."""
         # Replace special characters with escaped equivalents
-        sanitized = label.replace('"', '\\"')  # Escape double quotes
+        sanitized = label.replace('"', '\\"')
         return sanitized
 
     def create_schema(self, unique_entities: set[str]) -> tuple[DataFrame, DataFrame]:
@@ -26,6 +25,7 @@ class GraphEntityCollector:
 
             for related_entity in related_entities:
                 if related_entity not in seen_nodes:
+                    # ToDo: this name/type notation is tightly coupled to the Grape library. Generalize this?
                     nodes.append({"name": self._clean_label(related_entity), "type": "entity|unknown"})
                     seen_nodes.add(related_entity)
 

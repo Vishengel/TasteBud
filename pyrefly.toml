@@ -3,7 +3,7 @@
 # check all Python files under the containing directory
 project-includes = ["**/*.py*"]
 # exclude some uninteresting files
-project-excludes = ["**/node_modules", "**/__pycache__", "**/*venv/**", "**/.[!/.]*/**"]
+project-excludes = ["**/node_modules", "**/__pycache__", "**/*venv/**", "**/.[!/.]*/**", "**/scratch"]
 # perform an upward search for `.gitignore`, `.ignore`, and `.git/info/exclude`, and
 # add those to `project-excludes` automatically
 use-ignore-files = true
