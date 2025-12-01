@@ -6,6 +6,7 @@ from typing import ClassVar
 
 from pydantic import BaseModel, PrivateAttr, field_serializer
 
+from libs.common.data_models.event import Event
 from libs.common.http.http_client import HttpResponse
 from libs.common.scrape.async_scrape_engine import AsyncScrapeEngine, ScrapeTask
 from libs.podiuminfo.scraping.event_html_parser import extract_events_from_html
@@ -78,7 +79,7 @@ class PodiuminfoEventScraper:
         self._enforce_safe_crawl_delay()
         self.concurrent_requests = self.SAFE_N_CONCURRENT_REQUESTS
 
-    async def scrape_events(self, query_params: PodiuminfoQueryParams) -> None:
+    async def scrape_events(self, query_params: PodiuminfoQueryParams) -> list[Event]:
         events = []
         end_of_results = False
         cursor = query_params._page
@@ -101,10 +102,10 @@ class PodiuminfoEventScraper:
                 logger.info("End of results reached")
                 end_of_results = True
 
-            events.extend(new_events)
+            events.extend([event for event in new_events if event is not None])
             logger.info("Collected %s events in total", len(events))
 
-        # ToDo: convert scraped JSONs to Event objects, return
+        return events
 
     def _enforce_safe_crawl_delay(self) -> None:
         if (
@@ -121,7 +122,7 @@ class PodiuminfoEventScraper:
             new_engine.per_batch_crawl_delay = self.SAFE_CRAWL_DELAY
             self.scrape_engine = new_engine
 
-    def _extract_all_events(self, html_results: Iterable[HttpResponse | None]) -> list[str]:
+    def _extract_all_events(self, html_results: Iterable[HttpResponse | None]) -> list[Event | None]:
         new_events = []
         nested_events = [extract_events_from_html(result.text) for result in html_results]
         for event_list in nested_events:

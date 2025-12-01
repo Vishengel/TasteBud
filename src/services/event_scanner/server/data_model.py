@@ -1,9 +1,13 @@
 import datetime
+from enum import Enum
 
 from pydantic import BaseModel, Field
 
 from libs.common.data_models.event import Event
-from services.event_scanner.event_sources.event_source_base import EventSourceType
+
+
+class EventSourceType(str, Enum):
+    PODIUMINFO = "podiuminfo"
 
 
 class GetEventSourcesResponse(BaseModel):

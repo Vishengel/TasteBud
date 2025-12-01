@@ -3,9 +3,9 @@ import logging.config
 import uvicorn
 from fastapi import APIRouter, FastAPI
 
-from services.event_scanner.event_sources.event_source_base import EventSourceType
 from services.event_scanner.event_sources.event_source_factory import event_source_factory
 from services.event_scanner.server.data_model import (
+    EventSourceType,
     FindEventsRequest,
     FindEventsResponse,
     GetEventSourcesResponse,
@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 def make_service():
-    app_service = FastAPI(title="Playlist Manager Service")
+    app_service = FastAPI(title="Event Scanner Service")
     logger.info("Starting %s...", app_service.title)
 
     app_service.state.event_sources = event_source_factory({EventSourceType.PODIUMINFO})
@@ -41,7 +41,8 @@ async def find_events(find_events_request: FindEventsRequest) -> FindEventsRespo
 
     # ToDo: make async
     for source in find_events_request.sources:
-        events.extend(app.state.event_sources[source].get_events())
+        new_events = await app.state.event_sources[source].find_events(find_events_request)
+        events.extend(new_events)
 
     return FindEventsResponse(events=events)
 
