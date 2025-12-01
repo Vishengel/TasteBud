@@ -40,8 +40,8 @@ async def find_events(find_events_request: FindEventsRequest) -> FindEventsRespo
     events = []
 
     # ToDo: make async
-    for source in find_events_request.sources:
-        new_events = await app.state.event_sources[source].find_events(find_events_request)
+    if find_events_request.podiuminfo_params:
+        new_events = await app.state.event_sources[EventSourceType.PODIUMINFO].find_events(find_events_request)
         events.extend(new_events)
 
     return FindEventsResponse(events=events)

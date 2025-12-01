@@ -14,9 +14,13 @@ class GetEventSourcesResponse(BaseModel):
     event_sources: list[EventSourceType]
 
 
-class FindEventsRequest(BaseModel):
-    sources: list[EventSourceType]
+class PodiuminfoSearchParams(BaseModel):
     start_date: datetime.date | None = datetime.date.today()
+    genre: str | None = None
+
+
+class FindEventsRequest(BaseModel):
+    podiuminfo_params: PodiuminfoSearchParams | None = None
 
 
 class FindEventsResponse(BaseModel):
