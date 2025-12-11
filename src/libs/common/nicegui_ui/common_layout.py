@@ -11,5 +11,4 @@ async def common_layout(nicegui_page: NiceGUIPage):
         ui.label("Tastebud").classes("text-h5")
         ui.switch("Dark mode", value=True).bind_value(dark, "value")
 
-    with ui.column().classes("p-6"):
-        await nicegui_page.create_page()
+    await nicegui_page.create_page()
