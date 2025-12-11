@@ -21,14 +21,14 @@ class PodiuminfoSearchParams(BaseModel):
 
     @field_validator("genre", mode="before")
     @classmethod
-    def parse_enum_name(cls, v):
-        if isinstance(v, str):
-            v = v.upper()
+    def parse_enum_name(cls, value):
+        if isinstance(value, str):
+            value = value.upper()
             try:
-                return PodiuminfoInputGenre[v]
+                return PodiuminfoInputGenre[value]
             except KeyError as exc:
-                raise ValueError(f"Unknown genre '{v}'") from exc
-        return v
+                raise ValueError(f"Unknown genre '{value}'") from exc
+        return value
 
 
 class FindEventsRequest(BaseModel):
