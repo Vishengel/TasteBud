@@ -6,11 +6,6 @@ from src.services.playlist_manager.nicegui_ui.pages.playlists_page import Playli
 from src.services.playlist_manager.server.app import app
 
 
-@ui.page("/")
-async def root():
-    return RedirectResponse("/playlist-manager")
-
-
 @ui.page("/playlist-manager")
 async def playlist_manager_page():
     playlists_page = PlaylistsPage()
@@ -18,5 +13,10 @@ async def playlist_manager_page():
 
 
 if __name__ in {"__main__", "__mp_main__"}:
+    # Only attach playlist-manager to root if it's being launched as the main app
+    @ui.page("/")
+    async def root():
+        return RedirectResponse("/playlist-manager")
+
     ui.run_with(app, title="TasteBud")
     ui.run(host="0.0.0.0", port=8001, reload=True)

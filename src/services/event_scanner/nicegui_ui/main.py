@@ -1,5 +1,5 @@
-import uvicorn
 from nicegui import ui
+from starlette.responses import RedirectResponse
 
 from libs.common.nicegui_ui.common_layout import common_layout
 from services.event_scanner.nicegui_ui.pages.event_scanner_page import EventScannerPage
@@ -12,8 +12,11 @@ async def page():
     await common_layout(event_scanner_page)
 
 
-ui.run_with(app)
+if __name__ in {"__main__", "__mp_main__"}:
+    # Only attach event-scanner to root if it's being launched as the main app
+    @ui.page("/")
+    async def root():
+        return RedirectResponse("/event-scanner")
 
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
+    ui.run_with(app)
+    ui.run(host="0.0.0.0", port=8000, reload=True)

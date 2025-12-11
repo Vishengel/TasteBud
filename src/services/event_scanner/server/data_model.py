@@ -4,15 +4,20 @@ from enum import Enum
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from libs.common.data_models.event import Event
-from libs.podiuminfo.scraping.event_scraper import PodiuminfoInputGenre
+from libs.podiuminfo.data_model import PodiuminfoInputGenre
 
 
 class EventSourceType(str, Enum):
     PODIUMINFO = "podiuminfo"
 
 
-class GetEventSourcesResponse(BaseModel):
-    event_sources: list[EventSourceType]
+class EventSourceOverview(BaseModel):
+    event_source_type: EventSourceType
+    genres: list[str]
+
+
+class GetEventSourceInfoResponse(BaseModel):
+    event_source_overviews: list[EventSourceOverview]
 
 
 class PodiuminfoSearchParams(BaseModel):
