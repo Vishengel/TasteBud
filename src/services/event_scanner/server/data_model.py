@@ -1,7 +1,7 @@
 import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from libs.common.data_models.event import Event
 from libs.podiuminfo.scraping.event_scraper import PodiuminfoInputGenre
@@ -27,7 +27,7 @@ class PodiuminfoSearchParams(BaseModel):
             try:
                 return PodiuminfoInputGenre[value]
             except KeyError as exc:
-                raise ValueError(f"Unknown genre '{value}'") from exc
+                raise ValidationError(f"Unknown genre '{value}'") from exc
         return value
 
 
