@@ -14,6 +14,3 @@ class BaseConfig(BaseSettings):
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
-
-
-BASE_CONFIG = BaseConfig()

@@ -1,11 +1,8 @@
 from pathlib import Path
 
-from dotenv import load_dotenv
 from pydantic_settings import SettingsConfigDict
 
 from base_config import BaseConfig
-
-load_dotenv()
 
 
 class Config(BaseConfig):
