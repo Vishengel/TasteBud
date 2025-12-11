@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from nicegui import ui
 from nicegui.events import GenericEventArguments
 
+from libs.common.nicegui_ui.tastebud_nicegui_layout import NiceGUIPage
 from src.libs.spotify.data_model.playlist import Playlist
 from src.services.playlist_manager.nicegui_ui.components.playlists_table import PlaylistTable
 from src.services.playlist_manager.server.app import combine_playlists, get_playlists
@@ -24,7 +25,7 @@ def _get_table_rows(playlists: list[Playlist], return_tastebud_playlists: bool =
     return [_playlist_to_row(idx, pl) for idx, pl in enumerate(filtered_playlists, start=1)]
 
 
-class PlaylistsPage:
+class PlaylistsPage(NiceGUIPage):
     def __init__(self):
         self.user_id: str | None = None
         self.selected = []
@@ -70,10 +71,7 @@ class PlaylistsPage:
 
         return result
 
-    async def create(self):
-        dark = ui.dark_mode(True)
-        ui.switch("Dark mode", value=True).bind_value(dark, target_name="value")
-
+    async def create_page(self):
         with ui.left_drawer():
             ui.label("Actions").classes("text-h6")
             ui.button("Combine selected", on_click=self.combine)
