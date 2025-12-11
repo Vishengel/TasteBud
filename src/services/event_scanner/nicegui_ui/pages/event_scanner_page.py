@@ -3,8 +3,13 @@ import datetime
 from nicegui import ui
 
 from libs.common.nicegui_ui.tastebud_nicegui_layout import NiceGUIPage
-from services.event_scanner.server.app import get_event_source_info
-from services.event_scanner.server.data_model import EventSourceOverview, EventSourceType
+from services.event_scanner.server.app import find_events, get_event_source_info
+from services.event_scanner.server.data_model import (
+    EventSourceOverview,
+    EventSourceType,
+    FindEventsRequest,
+    PodiuminfoSearchParams,
+)
 
 
 class EventScannerPage(NiceGUIPage):
@@ -13,6 +18,7 @@ class EventScannerPage(NiceGUIPage):
         self.start_date = datetime.date.today()
         self.dropdown_value = None
         self.event_sources: dict[EventSourceType, EventSourceOverview] = {}
+        self.loading_events: bool = False
 
     async def create_page(self):
         await self._get_event_source_info()
@@ -25,13 +31,44 @@ class EventScannerPage(NiceGUIPage):
                     ui.date_input("Start date", value=self.start_date.isoformat()).bind_value(self, "start_date")
                     ui.select(label="Select genre", options=podiuminfo_input_genres).bind_value(self, "dropdown_value")
 
-                ui.button("Scan for events", on_click=self.scan_events)
+                with ui.row().classes("items-center gap-2"):
+                    self.scan_button = ui.button("Scan for events", on_click=self._scan_podiuminfo_events)
+                    self.scan_button.bind_enabled_from(self, "loading_events", backward=lambda x: not x)
+                    self.spinner = ui.spinner("audio", size="sm", color="green").bind_visibility_from(
+                        self, "loading_events"
+                    )
 
-    async def scan_events(self):
-        print("Podiuminfo:", self.use_podiuminfo)
-        print("Start date:", self.start_date)
-        print("Dropdown selection:", self.dropdown_value)
-        ui.notify("Scan triggered!")
+                columns = [
+                    {"name": "artist", "label": "Artist", "field": "artist", "sortable": True, "align": "left"},
+                    {"name": "city", "label": "City", "field": "city", "sortable": True, "align": "left"},
+                    {"name": "venue", "label": "Venue", "field": "venue", "sortable": True, "align": "left"},
+                    {"name": "date", "label": "Date", "field": "date", "sortable": True, "align": "left"},
+                    {"name": "url", "label": "URL", "field": "url", "sortable": True, "align": "left"},
+                ]
+                self.table = ui.table(columns=columns, rows=[], row_key="playlist_name")
+
+    async def _scan_podiuminfo_events(self):
+        self.loading_events = True
+        find_events_request = FindEventsRequest(
+            podiuminfo_params=PodiuminfoSearchParams(start_date=self.start_date, genre=self.dropdown_value)
+        )
+        events_response = await find_events(find_events_request)
+
+        rows = []
+        for event in events_response.events:
+            rows.append(
+                {
+                    "artist": ", ".join(event.artists),
+                    "city": event.venue.location.city,
+                    "venue": event.venue.name,
+                    "date": event.date,
+                    "url": event.url,
+                }
+            )
+
+        self.table.rows = rows
+        self.table.update()
+        self.loading_events = False
 
     async def _get_event_source_info(self):
         event_info_response = await get_event_source_info()
