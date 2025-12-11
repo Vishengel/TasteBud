@@ -1,9 +1,10 @@
 import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from libs.common.data_models.event import Event
+from libs.podiuminfo.scraping.event_scraper import PodiuminfoInputGenre
 
 
 class EventSourceType(str, Enum):
@@ -16,7 +17,18 @@ class GetEventSourcesResponse(BaseModel):
 
 class PodiuminfoSearchParams(BaseModel):
     start_date: datetime.date | None = datetime.date.today()
-    genre: str | None = None
+    genre: PodiuminfoInputGenre | None = None
+
+    @field_validator("genre", mode="before")
+    @classmethod
+    def parse_enum_name(cls, v):
+        if isinstance(v, str):
+            v = v.upper()
+            try:
+                return PodiuminfoInputGenre[v]
+            except KeyError as exc:
+                raise ValueError(f"Unknown genre '{v}'") from exc
+        return v
 
 
 class FindEventsRequest(BaseModel):
