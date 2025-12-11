@@ -6,8 +6,8 @@ from polars import DataFrame, col, read_parquet
 from spotipy import Spotify
 from tqdm import tqdm
 
-from config import CONFIG
-from src.libs.common.data_util import chunk_generator
+from libs.common.util.data_util import chunk_generator
+from libs.spotify.config import CONFIG
 
 logger = logging.getLogger(__name__)
 

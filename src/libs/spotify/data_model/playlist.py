@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel, model_validator
 
-from config import CONFIG
+from libs.spotify.config import CONFIG
 
 
 class Playlist(BaseModel):

@@ -1,4 +1,4 @@
-from config import CONFIG
+from base_config import BASE_CONFIG
 from src.libs.lastfm.lastfm_client import LastFMClient
 
 
@@ -6,7 +6,10 @@ class LastFMEntitySource:
     def __init__(self, lastfm_api_client: LastFMClient | None = None):
         if lastfm_api_client is None:
             self.lastfm_api_client = LastFMClient(
-                CONFIG.lastfm_api_key, CONFIG.lastfm_shared_secret, CONFIG.lastfm_username, CONFIG.lastfm_password
+                BASE_CONFIG.lastfm_api_key,
+                BASE_CONFIG.lastfm_shared_secret,
+                BASE_CONFIG.lastfm_username,
+                BASE_CONFIG.lastfm_password,
             )
         else:
             self.lastfm_api_client = lastfm_api_client

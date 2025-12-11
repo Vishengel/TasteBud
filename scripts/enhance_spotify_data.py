@@ -5,7 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from spotipy import CacheFileHandler, Spotify, SpotifyClientCredentials
 
-from config import CONFIG
+from base_config import BASE_CONFIG
 from src.libs.spotify.spotify_history.spotify_history_builder import SpotifyHistoryBuilder
 
 logging.basicConfig(
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     args = get_args()
     sp_client = Spotify(
         auth_manager=SpotifyClientCredentials(
-            cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / "credentials")
+            cache_handler=CacheFileHandler(cache_path=BASE_CONFIG.cache_dir / "credentials")
         )
     )
     spotify_history_analyzer = SpotifyHistoryBuilder(sp_client, args.history)

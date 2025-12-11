@@ -3,8 +3,10 @@ from urllib.parse import quote
 
 from diskcache import Cache
 
-from config import CONFIG
-from src.libs.common.query_util import TooManyRequestsError, httpx_get_request
+from libs.common.http.exceptions import TooManyRequestsError
+from libs.common.http.http_client import HttpResponse
+from libs.common.http.sync_httpx_client import httpx_get_request
+from libs.tastedive.config import CONFIG
 
 
 class TastediveClient:
@@ -14,7 +16,7 @@ class TastediveClient:
     def __init__(self, tastedive_api_key: str):
         self.tastedive_api_key = tastedive_api_key
 
-    def _query_tastedive(self, params: dict) -> dict | None:
+    def _query_tastedive(self, params: dict) -> HttpResponse | None:
         try:
             response = httpx_get_request(self.TASTEDIVE_URL, params)
         except TooManyRequestsError:
@@ -36,7 +38,7 @@ class TastediveClient:
         if response is None:
             return []
 
-        results = response["similar"]["results"]
+        results = response.json()["similar"]["results"]
         recommendations = [artist["name"] for artist in results]
         self.artist_cache.set(query, recommendations)
 

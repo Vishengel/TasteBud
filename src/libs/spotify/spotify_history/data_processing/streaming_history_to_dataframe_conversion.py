@@ -3,7 +3,7 @@ from typing import Literal
 
 import polars as pl
 
-from config import CONFIG
+from base_config import BASE_CONFIG
 from src.libs.common.file_util import get_files_in_dir, load_json_from_file, logger
 
 
@@ -60,4 +60,4 @@ def convert_streaming_history_to_dataframe(streaming_history_dir: Path, user_nam
         track_records.extend(_get_records_from_json(json_path=json_file))
 
     df = pl.from_dicts(track_records)
-    df.write_parquet(CONFIG.data_dir / output_file_name)
+    df.write_parquet(BASE_CONFIG.data_dir / output_file_name)

@@ -1,9 +1,11 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 
 class HttpResponse(Protocol):
     status_code: int
     text: str
+
+    def json(self, **kwargs: Any) -> Any: ...
 
 
 class SyncHttpClient(Protocol):

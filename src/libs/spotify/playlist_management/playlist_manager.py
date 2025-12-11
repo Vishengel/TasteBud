@@ -1,7 +1,7 @@
 from datetime import datetime
 from functools import cached_property
 
-from config import CONFIG
+from libs.spotify.config import CONFIG
 from src.libs.spotify.data_model.playlist import Playlist
 from src.libs.spotify.data_model.track import Track
 from src.libs.spotify.spotify_client.spotify_client import SpotifyClient

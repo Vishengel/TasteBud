@@ -3,7 +3,7 @@ import logging
 from diskcache import Cache
 from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError, md5
 
-from config import CONFIG
+from libs.lastfm.config import CONFIG
 
 logger = logging.getLogger(__name__)
 
