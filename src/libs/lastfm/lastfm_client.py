@@ -6,7 +6,6 @@ from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError,
 
 from libs.lastfm.config import CONFIG
 from libs.lastfm.data_model.artist import Artist
-from libs.lastfm.scraping.user_page_scraper import UserPageScraper
 
 logger = logging.getLogger(__name__)
 
@@ -23,18 +22,10 @@ class Period(str, Enum):
 class LastFMClient:
     artist_cache = Cache(CONFIG.cache_dir / "lastfm_similar_artists")
 
-    def __init__(
-        self,
-        api_key: str,
-        api_secret: str,
-        username: str,
-        password: str,
-        user_page_scraper: UserPageScraper | None = None,
-    ):
+    def __init__(self, api_key: str, api_secret: str, username: str, password: str):
         self.network = LastFMNetwork(
             api_key=api_key, api_secret=api_secret, username=username, password_hash=md5(password)
         )
-        self.user_page_scraper = user_page_scraper
 
     def get_similar_artists(self, artist_name: str, limit: int | None = 10) -> list[str]:
         cache_key = f"{artist_name}{limit}" if limit is not None else artist_name
@@ -60,9 +51,7 @@ class LastFMClient:
     ) -> list[Artist]:
         user = self.network.get_user(username=username)
 
-        if period == Period.OVERALL and (
-            (limit is None and self.user_page_scraper is not None) or (limit is not None and limit > 1000)
-        ):
+        if period == Period.OVERALL and ((limit is None) or (limit is not None and limit > 1000)):
             # A top_artists request is limited to 1000 items. If limit > 1000 or set to None (== all artists),
             # we retrieve the user library and get the artists from there. This might take a while.
             library = user.get_library()
