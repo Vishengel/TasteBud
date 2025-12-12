@@ -1,5 +1,4 @@
 from datetime import datetime
-from functools import cached_property
 
 from libs.spotify.config import CONFIG
 from src.libs.spotify.data_model.playlist import Playlist
@@ -26,12 +25,15 @@ class PlaylistManager:
     def __init__(self, spotify_client: SpotifyClient, user_id: str | None = None):
         self.spotify_client = spotify_client
         self.main_user_id = user_id if user_id is not None else self.spotify_client.current_user_id
-        self.playlists = self._get_playlists_dict()
+        self.playlists: dict[str, Playlist] = self._get_playlists_dict()
         self.name_to_id_map = {playlist.name: playlist.id for playlist in self.playlists.values()}
 
-    @cached_property
     def playlists_for_main_user(self) -> list[Playlist]:
         return self.get_all_playlists_for_user_id(self.main_user_id)
+
+    def get_playlist(self, playlist_id: str) -> Playlist:
+        playlist = self.spotify_client.playlist(playlist_id)
+        return Playlist.from_spotify_playlist_dict(playlist)
 
     def get_all_playlists_for_user_id(self, user_id: str) -> list[Playlist]:
         raw_playlists = self.spotify_client.fetch_all_playlists(user_id)
@@ -73,7 +75,7 @@ class PlaylistManager:
 
         combined_playlist_id = self.name_to_id_map[combined_playlist_name]
         self.spotify_client.replace_tracks_in_playlist(combined_playlist_id, [track.uri for track in tracks])
-        self.playlists[combined_playlist_id] = self.spotify_client.user_playlist_create(user_id, combined_playlist_id)
+        self.playlists[combined_playlist_id] = self.get_playlist(combined_playlist_id)
         return self.playlists[combined_playlist_id]
 
     def create_playlist(self, user_id: str, name: str, description: str = "") -> Playlist:
@@ -108,4 +110,4 @@ class PlaylistManager:
         return name in self.name_to_id_map
 
     def _get_playlists_dict(self) -> dict[str, Playlist]:
-        return {playlist.id: playlist for playlist in self.playlists_for_main_user}
+        return {playlist.id: playlist for playlist in self.playlists_for_main_user()}
