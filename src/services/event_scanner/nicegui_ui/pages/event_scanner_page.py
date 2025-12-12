@@ -19,13 +19,14 @@ class EventScannerPage(NiceGUIPage):
         self.dropdown_value = None
         self.event_sources: dict[EventSourceType, EventSourceOverview] = {}
         self.loading_events: bool = False
+        self.events_loaded: bool = False
 
     async def create_page(self):
         await self._get_event_source_info()
         podiuminfo_input_genres = self.event_sources[EventSourceType.PODIUMINFO].genres
 
         with ui.row().classes("justify-center items-start w-full mt-10"):
-            with ui.column().classes("w-1/2 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg gap-4"):
+            with ui.column().classes("w-2/3 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg gap-4"):
                 with ui.row().classes("gap-4 items-center"):
                     ui.checkbox("Podiuminfo").bind_value(self, "use_podiuminfo")
                     ui.date_input("Start date", value=self.start_date.isoformat()).bind_value(self, "start_date")
@@ -39,13 +40,22 @@ class EventScannerPage(NiceGUIPage):
                     )
 
                 columns = [
-                    {"name": "artist", "label": "Artist", "field": "artist", "sortable": True, "align": "left"},
+                    {
+                        "name": "artist",
+                        "label": "Artist",
+                        "field": "artist",
+                        "sortable": True,
+                        "align": "left",
+                        "style": "text-wrap: wrap",
+                    },
                     {"name": "city", "label": "City", "field": "city", "sortable": True, "align": "left"},
                     {"name": "venue", "label": "Venue", "field": "venue", "sortable": True, "align": "left"},
                     {"name": "date", "label": "Date", "field": "date", "sortable": True, "align": "left"},
                     {"name": "url", "label": "URL", "field": "url", "sortable": True, "align": "left"},
                 ]
-                self.table = ui.table(columns=columns, rows=[], row_key="playlist_name")
+                self.table = ui.table(columns=columns, rows=[], row_key="playlist_name").bind_visibility_from(
+                    self, "events_loaded"
+                )
 
     async def _scan_podiuminfo_events(self):
         self.loading_events = True
@@ -67,8 +77,17 @@ class EventScannerPage(NiceGUIPage):
             )
 
         self.table.rows = rows
+        self.table.add_slot(
+            "body-cell-url",
+            """
+            <q-td :props="props">
+                <a :href="props.value">{{ props.value }}</a>
+            </q-td>
+        """,
+        )
         self.table.update()
         self.loading_events = False
+        self.events_loaded = True
 
     async def _get_event_source_info(self):
         event_info_response = await get_event_source_info()
