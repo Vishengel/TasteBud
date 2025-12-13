@@ -20,7 +20,11 @@ class SpotifyClient(Spotify):
     def __init__(self):
         super().__init__(
             auth_manager=SpotifyOAuth(
-                scope=self.SCOPE, cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / "credentials")
+                client_id=CONFIG.spotipy_client_id,
+                client_secret=CONFIG.spotipy_client_secret.get_secret_value(),
+                redirect_uri=CONFIG.spotipy_redirect_uri,
+                scope=self.SCOPE,
+                cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / "credentials"),
             )
         )
 

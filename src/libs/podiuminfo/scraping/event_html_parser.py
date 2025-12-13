@@ -4,6 +4,7 @@ import logging
 
 from bs4 import BeautifulSoup, Comment
 
+from libs.common.data_models.artist import Artist
 from libs.common.data_models.event import Event, Location, Venue
 from libs.common.scrape.exceptions import ElementNotFound
 
@@ -44,7 +45,7 @@ def _serialize_event_json(event_json: dict) -> Event | None:
         )
         return None
 
-    artists = [performer["name"] for performer in event_json["performer"]]
+    artists = [Artist(name=performer["name"]) for performer in event_json["performer"]]
 
     try:
         venue = _venue_from_location_field(event_json)

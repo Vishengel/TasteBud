@@ -2,6 +2,8 @@ import datetime
 
 from pydantic import BaseModel, model_validator
 
+from libs.common.data_models.artist import Artist
+
 
 class Coordinates(BaseModel):
     lat: float
@@ -31,7 +33,7 @@ class Venue(BaseModel):
 
 
 class Event(BaseModel):
-    artists: list[str]
+    artists: list[Artist]
     date: datetime.date
     venue: Venue
     url: str | None = None

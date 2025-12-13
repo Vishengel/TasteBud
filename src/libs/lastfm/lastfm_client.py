@@ -4,8 +4,8 @@ from enum import Enum
 from diskcache import Cache
 from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError, md5
 
+from libs.common.data_models.artist import Artist
 from libs.lastfm.config import CONFIG
-from libs.lastfm.data_model.artist import Artist
 
 logger = logging.getLogger(__name__)
 

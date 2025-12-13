@@ -1,10 +1,7 @@
 from pathlib import Path
 from typing import ClassVar
 
-from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class BaseConfig(BaseSettings):
@@ -14,3 +11,9 @@ class BaseConfig(BaseSettings):
 
     cache_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
+
+    model_config = SettingsConfigDict(
+        env_file=project_root / ".env",
+        env_file_encoding="utf-8",
+        env_ignore_empty=True,
+    )

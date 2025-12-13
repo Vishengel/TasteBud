@@ -68,7 +68,7 @@ class EventScannerPage(NiceGUIPage):
         for event in events_response.events:
             rows.append(
                 {
-                    "artist": ", ".join(event.artists),
+                    "artist": ", ".join([artist.name for artist in event.artists]),
                     "city": event.venue.location.city,
                     "venue": event.venue.name,
                     "date": event.date,
