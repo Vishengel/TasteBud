@@ -1,8 +1,11 @@
 import datetime
+from dataclasses import dataclass, field
 
 from nicegui import ui
 
 from libs.common.nicegui_ui.tastebud_nicegui_layout import NiceGUIPage
+from services.event_scanner.event_relevancy.lastfm_relevancy_score import LastFMPeriodOption, LastFMRelevancyScore
+from services.event_scanner.event_relevancy.relevancy_score import RelevancyScore
 from services.event_scanner.server.app import find_events, get_event_source_info
 from services.event_scanner.server.data_model import (
     EventSourceOverview,
@@ -12,14 +15,28 @@ from services.event_scanner.server.data_model import (
 )
 
 
+@dataclass
+class RelevancyScoreRegistry:
+    lastfm_score: LastFMRelevancyScore = field(default_factory=LastFMRelevancyScore)
+
+    def active_scorers(self) -> list[RelevancyScore]:
+        return [score for score in self.__dict__.values() if getattr(score, "active", False)]
+
+    def get_combined_score(self) -> float:
+        return sum(scorer.weight * scorer.get_score() for scorer in self.active_scorers())
+
+
 class EventScannerPage(NiceGUIPage):
     def __init__(self):
+        # Event sources
         self.use_podiuminfo: bool = False
         self.start_date = datetime.date.today()
         self.dropdown_value = None
         self.event_sources: dict[EventSourceType, EventSourceOverview] = {}
         self.loading_events: bool = False
         self.events_loaded: bool = False
+        # Relevancy scores
+        self.relevancy_score_registry = RelevancyScoreRegistry()
 
     async def create_page(self):
         await self._get_event_source_info()
@@ -31,6 +48,13 @@ class EventScannerPage(NiceGUIPage):
                     ui.checkbox("Podiuminfo").bind_value(self, "use_podiuminfo")
                     ui.date_input("Start date", value=self.start_date.isoformat()).bind_value(self, "start_date")
                     ui.select(label="Select genre", options=podiuminfo_input_genres).bind_value(self, "dropdown_value")
+                    # LastFM scoring
+                    ui.checkbox("LastFM scoring").bind_value(self.relevancy_score_registry.lastfm_score, "active")
+                    ui.select(
+                        label="Period",
+                        options=[p.value for p in LastFMPeriodOption],
+                        value=self.relevancy_score_registry.lastfm_score.period,
+                    ).bind_visibility_from(self.relevancy_score_registry.lastfm_score, "active")
 
                 with ui.row().classes("items-center gap-2"):
                     self.scan_button = ui.button("Scan for events", on_click=self._scan_podiuminfo_events)
@@ -40,6 +64,7 @@ class EventScannerPage(NiceGUIPage):
                     )
 
                 columns = [
+                    {"name": "hype", "label": "HYPE", "field": "hype", "sortable": True, "align": "left"},
                     {
                         "name": "artist",
                         "label": "Artist",
@@ -68,6 +93,7 @@ class EventScannerPage(NiceGUIPage):
         for event in events_response.events:
             rows.append(
                 {
+                    "hype": self.relevancy_score_registry.get_combined_score(),
                     "artist": ", ".join([artist.name for artist in event.artists]),
                     "city": event.venue.location.city,
                     "venue": event.venue.name,

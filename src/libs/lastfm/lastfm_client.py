@@ -64,4 +64,9 @@ class LastFMClient:
 
     @classmethod
     def from_config(cls, config: BaseSettings = CONFIG) -> "LastFMClient":
-        return cls(config.api_key, config.api_secret, config.username, config.password)
+        return cls(
+            config.lastfm_api_key,
+            config.lastfm_shared_secret.get_secret_value(),
+            config.lastfm_username,
+            config.lastfm_password.get_secret_value(),
+        )

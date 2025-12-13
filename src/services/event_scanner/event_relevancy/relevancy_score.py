@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Protocol
+from typing import ClassVar, Protocol
 
 
 class RelevancyScoreSource(str, Enum):
@@ -8,3 +8,7 @@ class RelevancyScoreSource(str, Enum):
 
 class RelevancyScore(Protocol):
     source: RelevancyScoreSource
+    active: bool
+    weight: ClassVar[float]
+
+    def get_score(self) -> float: ...

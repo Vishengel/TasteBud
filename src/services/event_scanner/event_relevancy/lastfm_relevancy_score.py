@@ -25,9 +25,16 @@ class LastFMRelevancyScore(RelevancyScore):
     }
 
     source = RelevancyScoreSource.LASTFM
+    active: bool
+    weight: ClassVar[float] = 1.0
 
     def __init__(self, lastfm_client: LastFMClient | None = None):
         self.lastfm_client = lastfm_client or LastFMClient.from_config()
+        self.active = False
+        self.period = LastFMPeriodOption.OVERALL
+
+    def get_score(self) -> float:
+        return 0.0
 
     @classmethod
     def to_api_period(cls, period: LastFMPeriodOption) -> Period:
