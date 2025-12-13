@@ -3,7 +3,19 @@ from enum import Enum
 
 from diskcache import Cache
 from pydantic_settings import BaseSettings
-from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError, md5
+from pylast import (
+    PERIOD_1MONTH,
+    PERIOD_3MONTHS,
+    PERIOD_6MONTHS,
+    PERIOD_7DAYS,
+    PERIOD_12MONTHS,
+    PERIOD_OVERALL,
+    LastFMNetwork,
+    MalformedResponseError,
+    NetworkError,
+    WSError,
+    md5,
+)
 
 from libs.common.data_models.artist import Artist
 from libs.lastfm.config import CONFIG
@@ -12,12 +24,12 @@ logger = logging.getLogger(__name__)
 
 
 class Period(str, Enum):
-    OVERALL = "overall"
-    SEVENDAYS = "7day"
-    ONEMONTH = "1month"
-    THREEMONTHS = "3month"
-    SIXMONTHS = "6month"
-    TWELVEMONTHS = "12months"
+    OVERALL = PERIOD_OVERALL
+    SEVENDAYS = PERIOD_7DAYS
+    ONEMONTH = PERIOD_1MONTH
+    THREEMONTHS = PERIOD_3MONTHS
+    SIXMONTHS = PERIOD_6MONTHS
+    TWELVEMONTHS = PERIOD_12MONTHS
 
 
 class LastFMClient:
@@ -48,8 +60,10 @@ class LastFMClient:
         return similar_artist_names
 
     def get_top_artists_for_user(
-        self, username: str, period: Period = Period.OVERALL, limit: int | None = None
+        self, username: str | None, period: Period = Period.OVERALL, limit: int | None = None
     ) -> list[Artist]:
+        if username is None:
+            username = self.network.username
         user = self.network.get_user(username=username)
 
         if period == Period.OVERALL and ((limit is None) or (limit is not None and limit > 1000)):
@@ -59,7 +73,10 @@ class LastFMClient:
             items = library.get_artists(limit=limit)
             return [Artist(name=item.item.name, playcount=item.playcount) for item in items]
 
-        items = user.get_top_artists(period=period, limit=limit)
+        if limit is None:
+            limit = 1000
+
+        items = user.get_top_artists(period=period.value, limit=limit)
         return [Artist(name=top_item.item.name, playcount=top_item.weight) for top_item in items]
 
     @classmethod
