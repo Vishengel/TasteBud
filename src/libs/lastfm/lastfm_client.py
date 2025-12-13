@@ -2,6 +2,7 @@ import logging
 from enum import Enum
 
 from diskcache import Cache
+from pydantic_settings import BaseSettings
 from pylast import LastFMNetwork, MalformedResponseError, NetworkError, WSError, md5
 
 from libs.common.data_models.artist import Artist
@@ -60,3 +61,7 @@ class LastFMClient:
 
         items = user.get_top_artists(period=period, limit=limit)
         return [Artist(name=top_item.item.name, playcount=top_item.weight) for top_item in items]
+
+    @classmethod
+    def from_config(cls, config: BaseSettings = CONFIG) -> "LastFMClient":
+        return cls(config.api_key, config.api_secret, config.username, config.password)
