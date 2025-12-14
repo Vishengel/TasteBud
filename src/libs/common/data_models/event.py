@@ -3,22 +3,7 @@ import datetime
 from pydantic import BaseModel, model_validator
 
 from libs.common.data_models.artist import Artist
-
-
-class Coordinates(BaseModel):
-    lat: float
-    lon: float
-
-
-class Location(BaseModel):
-    country: str | None = None
-    country_code: str | None = None
-    state: str | None = None
-    city: str | None = None
-    street: str | None = None
-    street_number: str | None = None
-    postal_code: str | None = None
-    coordinates: Coordinates | None = None
+from libs.common.data_models.location import Location
 
 
 class Venue(BaseModel):

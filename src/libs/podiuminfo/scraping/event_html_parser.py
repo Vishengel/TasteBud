@@ -5,7 +5,8 @@ import logging
 from bs4 import BeautifulSoup, Comment
 
 from libs.common.data_models.artist import Artist
-from libs.common.data_models.event import Event, Location, Venue
+from libs.common.data_models.event import Event, Venue
+from libs.common.data_models.location import Location
 from libs.common.scrape.exceptions import ElementNotFound
 
 logger = logging.getLogger(__name__)

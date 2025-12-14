@@ -16,6 +16,9 @@ dependencies = [
     "tqdm>=4.67.1",
     "spotipy>=2.25.1",
     "beautifulsoup4>=4.14.2",
+    "ruff>=0.14.9",
+    "pyrefly>=0.45.2",
+    "geopy>=2.4.1",
 ]
 
 [dependency-groups]
