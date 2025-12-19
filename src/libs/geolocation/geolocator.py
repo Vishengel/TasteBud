@@ -13,7 +13,7 @@ class Geolocator:
     def __init__(self, geolocation_provider: Geocoder | None = None):
         self.geolocator = geolocation_provider or Nominatim(user_agent="tastebud")
 
-    def find_coordinates_for_location(
+    def enrich_location_with_coordinates(
         self, location: Location, include_address_details: bool = True, language: str = "en"
     ) -> Location:
         geopy_location = self.geolocator.geocode(
@@ -27,8 +27,8 @@ class Geolocator:
         return distance((coords1.lat, coords1.lon), (coords2.lat, coords2.lon)).kilometers
 
     def get_distance_between_locations(self, loc1: Location, loc2: Location) -> float:
-        location1 = self.find_coordinates_for_location(loc1)
-        location2 = self.find_coordinates_for_location(loc2)
+        location1 = self.enrich_location_with_coordinates(loc1)
+        location2 = self.enrich_location_with_coordinates(loc2)
 
         if location1.coordinates is None:
             raise ValueError(f"Unable to retrieve coordinates for {location1}")
