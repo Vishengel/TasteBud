@@ -24,7 +24,7 @@ class Geolocator:
 
     @staticmethod
     def get_distance(coords1: Coordinates, coords2: Coordinates) -> float:
-        return distance(coords1, coords2).kilometers
+        return distance((coords1.lat, coords1.lon), (coords2.lat, coords2.lon)).kilometers
 
     def get_distance_between_locations(self, loc1: Location, loc2: Location) -> float:
         location1 = self.find_coordinates_for_location(loc1)
@@ -37,8 +37,3 @@ class Geolocator:
             raise ValueError(f"Unable to retrieve coordinates for {location2}")
 
         return self.get_distance(location1.coordinates, location2.coordinates)
-
-
-loc = Geolocator()
-location = loc.get_distance_between_locations(Location(city="groningen"), Location(city="amsterdam"))
-print(location)
