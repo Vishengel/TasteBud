@@ -69,6 +69,13 @@ class EventScannerPage(NiceGUIPage):
                 columns = [
                     {"name": "hype", "label": "HYPE", "field": "hype", "sortable": True, "align": "left"},
                     {
+                        "name": "distance",
+                        "label": "Distance (km)",
+                        "field": "distance",
+                        "sortable": True,
+                        "align": "left",
+                    },
+                    {
                         "name": "artist",
                         "label": "Artist",
                         "field": "artist",
@@ -102,7 +109,8 @@ class EventScannerPage(NiceGUIPage):
         for event in events_response.events:
             rows.append(
                 {
-                    "hype": self.relevancy_score_registry.get_combined_score(event),
+                    "hype": round(self.relevancy_score_registry.lastfm_score.get_score(event)),
+                    "distance": round(self.relevancy_score_registry.distance_score.get_score(event)),
                     "artist": ", ".join([artist.name for artist in event.artists]),
                     "city": event.venue.location.city,
                     "venue": event.venue.name,

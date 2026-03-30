@@ -1,39 +1,63 @@
 import logging
+from functools import lru_cache
 
 from geopy.distance import distance
-from geopy.geocoders import Nominatim
-from geopy.geocoders.base import Geocoder
 
 from libs.common.data_models.location import Coordinates, Location
+from libs.geolocation.config import CONFIG
+from libs.geolocation.geolocation_providers import GeocodingProvider, GeoNamesProvider
 
 logger = logging.getLogger(__name__)
 
 
 class Geolocator:
-    def __init__(self, geolocation_provider: Geocoder | None = None):
-        self.geolocator = geolocation_provider or Nominatim(user_agent="tastebud")
-
-    def enrich_location_with_coordinates(
-        self, location: Location, include_address_details: bool = True, language: str = "en"
-    ) -> Location:
-        geopy_location = self.geolocator.geocode(
-            location.to_address_string(), addressdetails=include_address_details, language=language
-        )
-        location.coordinates = Coordinates(lat=geopy_location.latitude, lon=geopy_location.longitude)
-        return location
+    def __init__(
+        self, geolocation_provider: GeocodingProvider | None = None, supported_countries: list[str] | None = None
+    ):
+        self.geolocator = geolocation_provider or GeoNamesProvider(username=CONFIG.geonames_username)
+        self._cached_geocoder_method = make_cached_geocoder(self.geolocator)
+        self.supported_countries = tuple(supported_countries) if supported_countries else None
 
     @staticmethod
     def get_distance(coords1: Coordinates, coords2: Coordinates) -> float:
         return distance((coords1.lat, coords1.lon), (coords2.lat, coords2.lon)).kilometers
 
-    def get_distance_between_locations(self, loc1: Location, loc2: Location) -> float:
-        location1 = self.enrich_location_with_coordinates(loc1)
-        location2 = self.enrich_location_with_coordinates(loc2)
+    def _get_coordinates(self, location: Location) -> Coordinates:
+        city = location.city
+        country = location.country
 
-        if location1.coordinates is None:
-            raise ValueError(f"Unable to retrieve coordinates for {location1}")
+        coords = self._cached_geocoder_method(city, country, self.supported_countries)
 
-        if location2.coordinates is None:
-            raise ValueError(f"Unable to retrieve coordinates for {location2}")
+        if coords is None:
+            raise ValueError(f"Unable to retrieve coordinates for {location}")
 
-        return self.get_distance(location1.coordinates, location2.coordinates)
+        location.coordinates = coords
+        return coords
+
+    def get_distance_between_locations(
+        self,
+        loc1: Location,
+        loc2: Location,
+    ) -> float:
+        coords1 = self._get_coordinates(loc1)
+        coords2 = self._get_coordinates(loc2)
+
+        return self.get_distance(coords1, coords2)
+
+
+# Moved outside of Geolocator class to prevent functools cache-related memory leaks
+def make_cached_geocoder(provider: GeocodingProvider):
+    @lru_cache(maxsize=512)
+    def _cached(
+        city: str | None,
+        country: str | None,
+        supported_countries: tuple[str, ...] | None,
+    ) -> Coordinates | None:
+        location = Location(city=city, country=country)
+
+        return provider.geocode_location(
+            location,
+            list(supported_countries) if supported_countries else None,
+        )
+
+    return _cached

@@ -5,6 +5,8 @@ class Coordinates(BaseModel):
     lat: float
     lon: float
 
+    model_config = {"frozen": True}
+
 
 class Location(BaseModel):
     country: str | None = None
@@ -31,3 +33,17 @@ class Location(BaseModel):
 
         parts = [street_part, self.state, city_part, self.country]
         return ", ".join(part for part in parts if part)
+
+    def __hash__(self):
+        return hash(
+            (
+                self.country,
+                self.country_code,
+                self.state,
+                self.city,
+                self.street,
+                self.street_number,
+                self.postal_code,
+                self.coordinates,
+            )
+        )

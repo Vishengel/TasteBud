@@ -6,6 +6,7 @@ from libs.common.data_models.event import Event
 
 class RelevancyScoreSource(str, Enum):
     LASTFM = "lastfm"
+    DISTANCE = "distance"
 
 
 class RelevancyScore(Protocol):
