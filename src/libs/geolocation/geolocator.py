@@ -15,7 +15,8 @@ class Geolocator:
         self, geolocation_provider: GeocodingProvider | None = None, supported_countries: list[str] | None = None
     ):
         self.geolocator = geolocation_provider or GeoNamesProvider(username=CONFIG.geonames_username)
-        self.supported_countries = supported_countries
+        self._cached_geocoder_method = make_cached_geocoder(self.geolocator)
+        self.supported_countries = tuple(supported_countries) if supported_countries else None
 
     @staticmethod
     def get_distance(coords1: Coordinates, coords2: Coordinates) -> float:
@@ -25,7 +26,7 @@ class Geolocator:
         city = location.city
         country = location.country
 
-        coords = _get_cached_coordinates(city, country)
+        coords = self._cached_geocoder_method(city, country, self.supported_countries)
 
         if coords is None:
             raise ValueError(f"Unable to retrieve coordinates for {location}")
@@ -45,14 +46,18 @@ class Geolocator:
 
 
 # Moved outside of Geolocator class to prevent functools cache-related memory leaks
-@lru_cache(maxsize=512)
-def _get_cached_coordinates(
-    geolocator: Geolocator,
-    city: str,
-    country: str,
-) -> Coordinates | None:
-    location = Location(city=city, country=country)
-    return geolocator.geolocator.geocode_location(
-        location,
-        geolocator.supported_countries,
-    )
+def make_cached_geocoder(provider: GeocodingProvider):
+    @lru_cache(maxsize=512)
+    def _cached(
+        city: str | None,
+        country: str | None,
+        supported_countries: tuple[str, ...] | None,
+    ) -> Coordinates | None:
+        location = Location(city=city, country=country)
+
+        return provider.geocode_location(
+            location,
+            list(supported_countries) if supported_countries else None,
+        )
+
+    return _cached
