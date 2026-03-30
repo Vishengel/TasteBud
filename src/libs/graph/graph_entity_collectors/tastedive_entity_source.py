@@ -1,5 +1,5 @@
 from libs.tastedive.config import CONFIG
-from src.libs.tastedive.tastedive_client import TastediveClient
+from libs.tastedive.tastedive_client import TastediveClient
 
 
 class TastediveEntitySource:

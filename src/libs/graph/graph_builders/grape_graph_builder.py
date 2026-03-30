@@ -1,7 +1,7 @@
 from ensmallen import Graph
 
-from src.libs.graph.graph_builders.graph_builder_protocol import GraphBuilder
-from src.libs.graph.graph_dataclass import GraphSchema
+from libs.graph.graph_builders.graph_builder_protocol import GraphBuilder
+from libs.graph.graph_dataclass import GraphSchema
 
 
 class GrapeGraphBuilder(GraphBuilder):

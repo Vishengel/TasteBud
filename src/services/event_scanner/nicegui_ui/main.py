@@ -3,7 +3,7 @@ from starlette.responses import RedirectResponse
 
 from libs.common.nicegui_ui.common_layout import common_layout
 from services.event_scanner.nicegui_ui.pages.event_scanner_page import EventScannerPage
-from src.services.playlist_manager.server.app import app
+from services.event_scanner.server.app import app
 
 
 @ui.page("/event-scanner")

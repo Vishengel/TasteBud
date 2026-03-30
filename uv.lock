@@ -2281,6 +2281,7 @@ dependencies = [
     { name = "nicegui" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "pylast" },
     { name = "pyrefly" },
     { name = "python-dotenv" },
     { name = "python-json-logger" },
@@ -2296,7 +2297,6 @@ dev = [
     { name = "graphviz" },
     { name = "polars" },
     { name = "pyarrow" },
-    { name = "pylast" },
 ]
 
 [package.metadata]
@@ -2309,6 +2309,7 @@ requires-dist = [
     { name = "nicegui", specifier = ">=3.3.1" },
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "pylast", specifier = ">=6.0.0" },
     { name = "pyrefly", specifier = ">=0.45.2" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "python-json-logger", specifier = ">=4.0.0" },
@@ -2324,7 +2325,6 @@ dev = [
     { name = "graphviz", specifier = ">=0.21" },
     { name = "polars", specifier = ">=1.32.3" },
     { name = "pyarrow", specifier = ">=22.0.0" },
-    { name = "pylast", specifier = ">=6.0.0" },
 ]
 
 [[package]]

@@ -2,8 +2,8 @@ from nicegui import ui
 from starlette.responses import RedirectResponse
 
 from libs.common.nicegui_ui.common_layout import common_layout
-from src.services.playlist_manager.nicegui_ui.pages.playlists_page import PlaylistsPage
-from src.services.playlist_manager.server.app import app
+from services.playlist_manager.nicegui_ui.pages.playlists_page import PlaylistsPage
+from services.playlist_manager.server.app import app
 
 
 @ui.page("/playlist-manager")

@@ -317,6 +317,7 @@ httpx==0.28.1 \
     --hash=sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad
     # via
     #   nicegui
+    #   pylast
     #   tastebud
 idna==3.10 \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
@@ -678,6 +679,10 @@ pygments==2.19.2 \
     --hash=sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887 \
     --hash=sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b
     # via nicegui
+pylast==6.0.0 \
+    --hash=sha256:09748dcdb97ddc812c65460bea73f7cce578b2b8ed4d9f6a0d1da122f8b05c5c \
+    --hash=sha256:8570017a955a04c5694e7ad38b13081b6119531b4a10bfc771ccd0b9d4f900ee
+    # via tastebud
 pyrefly==0.45.2 \
     --hash=sha256:33467adbb9aa4993666a1e3dcb35d00facdea1750692ccb2a07fdb9204cf1f10 \
     --hash=sha256:3f2f011e3fe6ed6662c8aab86c05365336b2bb07d44852fe7428be61239a9fe1 \

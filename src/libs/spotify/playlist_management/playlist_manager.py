@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from libs.spotify.config import CONFIG
-from src.libs.spotify.data_model.playlist import Playlist
-from src.libs.spotify.data_model.track import Track
-from src.libs.spotify.spotify_client.spotify_client import SpotifyClient
+from libs.spotify.data_model.playlist import Playlist
+from libs.spotify.data_model.track import Track
+from libs.spotify.spotify_client.spotify_client import SpotifyClient
 
 
 def _mark_combined_playlist_name(combined_playlist_name: str) -> str:

@@ -1,6 +1,6 @@
-from src.libs.graph.graph_builders.graph_builder_protocol import GraphBuilder
-from src.libs.graph.graph_entity_collectors.graph_schema_builder import GraphSchemaBuilder
-from src.libs.spotify.spotify_history.spotify_history_dataframe import SpotifyHistoryDataFrame
+from libs.graph.graph_builders.graph_builder_protocol import GraphBuilder
+from libs.graph.graph_entity_collectors.graph_schema_builder import GraphSchemaBuilder
+from libs.spotify.spotify_history.spotify_history_dataframe import SpotifyHistoryDataFrame
 
 
 class GraphBuilderPipeline:

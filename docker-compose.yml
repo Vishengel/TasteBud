@@ -1,0 +1,9 @@
+services:
+  event-scanner-ui:
+    image: tastebud
+    container_name: tastebud-event-scanner-ui
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./.env:/app/.env:ro
+    restart: unless-stopped

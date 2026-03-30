@@ -12,7 +12,7 @@ from services.event_scanner.server.data_model import (
     GetEventSourceInfoResponse,
     HealthResponse,
 )
-from src.services.playlist_manager.server.log_config import LOG_CONFIG
+from services.event_scanner.server.log_config import LOG_CONFIG
 
 logger = logging.getLogger(__name__)
 logging.config.dictConfig(LOG_CONFIG)

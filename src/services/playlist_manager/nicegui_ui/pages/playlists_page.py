@@ -3,10 +3,10 @@ from nicegui import ui
 from nicegui.events import GenericEventArguments
 
 from libs.common.nicegui_ui.tastebud_nicegui_layout import NiceGUIPage
-from src.libs.spotify.data_model.playlist import Playlist
-from src.services.playlist_manager.nicegui_ui.components.playlists_table import PlaylistTable
-from src.services.playlist_manager.server.app import combine_playlists, get_playlists
-from src.services.playlist_manager.server.data_model import CombinePlaylistsRequest
+from libs.spotify.data_model.playlist import Playlist
+from services.playlist_manager.nicegui_ui.components.playlists_table import PlaylistTable
+from services.playlist_manager.server.app import combine_playlists, get_playlists
+from services.playlist_manager.server.data_model import CombinePlaylistsRequest
 
 
 def _playlist_to_row(idx: int, playlist: Playlist):

@@ -4,16 +4,16 @@ import uvicorn
 from fastapi import APIRouter, FastAPI, HTTPException
 from spotipy import SpotifyException
 
-from src.libs.spotify.playlist_management.playlist_manager import PlaylistManager
-from src.libs.spotify.spotify_client.spotify_client import SpotifyClient
-from src.services.playlist_manager.server.data_model import (
+from libs.spotify.playlist_management.playlist_manager import PlaylistManager
+from libs.spotify.spotify_client.spotify_client import SpotifyClient
+from services.playlist_manager.server.data_model import (
     CombinePlaylistsRequest,
     CombinePlaylistsResponse,
     GetPlaylistsResponse,
     HealthResponse,
 )
-from src.services.playlist_manager.server.exception_handlers import spotify_exception_handler
-from src.services.playlist_manager.server.log_config import LOG_CONFIG
+from services.playlist_manager.server.exception_handlers import spotify_exception_handler
+from services.playlist_manager.server.log_config import LOG_CONFIG
 
 logger = logging.getLogger(__name__)
 logging.config.dictConfig(LOG_CONFIG)

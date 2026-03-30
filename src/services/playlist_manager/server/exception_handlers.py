@@ -1,6 +1,6 @@
 from spotipy import SpotifyException
 
-from src.services.playlist_manager.server.data_model import ErrorResponse
+from services.playlist_manager.server.data_model import ErrorResponse
 
 
 async def spotify_exception_handler(_, exc: SpotifyException):

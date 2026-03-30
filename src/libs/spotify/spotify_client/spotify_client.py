@@ -3,8 +3,8 @@ from typing import ClassVar
 
 from spotipy import CacheFileHandler, Spotify, SpotifyOAuth
 
+from libs.common.util.data_util import chunk_generator
 from libs.spotify.config import CONFIG
-from src.libs.common.util.data_util import chunk_generator
 
 
 class SpotifyClient(Spotify):

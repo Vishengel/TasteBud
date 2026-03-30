@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from src.libs.spotify.data_model.playlist import Playlist
+from libs.spotify.data_model.playlist import Playlist
 
 
 class GetPlaylistsResponse(BaseModel):
