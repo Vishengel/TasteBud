@@ -41,6 +41,4 @@ USER appuser
 
 EXPOSE 8000
 
-#WORKDIR /app/src/services/event_scanner/nicegui_ui
-
 CMD ["python3", "/app/src/services/event_scanner/nicegui_ui/main.py"]
