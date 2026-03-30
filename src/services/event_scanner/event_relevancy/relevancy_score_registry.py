@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from libs.common.data_models.event import Event
+from services.event_scanner.event_relevancy.distance_relevancy_score import DistanceRelevancyScore
 from services.event_scanner.event_relevancy.lastfm_relevancy_score import LastFMRelevancyScore
 from services.event_scanner.event_relevancy.relevancy_score import RelevancyScore
 
@@ -8,6 +9,7 @@ from services.event_scanner.event_relevancy.relevancy_score import RelevancyScor
 @dataclass
 class RelevancyScoreRegistry:
     lastfm_score: LastFMRelevancyScore = field(default_factory=LastFMRelevancyScore)
+    distance_score: DistanceRelevancyScore = field(default_factory=DistanceRelevancyScore)
 
     def active_scorers(self) -> list[RelevancyScore]:
         return [score for score in self.__dict__.values() if getattr(score, "active", False)]
