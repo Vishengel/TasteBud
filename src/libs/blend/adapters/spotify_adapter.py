@@ -1,10 +1,16 @@
-from typing import Literal
-
 from libs.blend.adapters.base_adapter import BlendAdapter
+from libs.blend.data_models.enums import Platform
 from libs.blend.data_models.scored_track import ScoredTrack
 from libs.blend.data_models.user_taste_profile import UserTasteProfile
 from libs.common.data_models.playlist import Playlist
+from libs.spotify.data_model.time_range import TimeRange
 from libs.spotify.spotify_client.spotify_client import SpotifyClient
+
+_TIME_WEIGHT_KEY_TO_RANGE: dict[str, TimeRange] = {
+    "long": TimeRange.LONG,
+    "medium": TimeRange.MEDIUM,
+    "short": TimeRange.SHORT,
+}
 
 
 def _extract_artist_ids(track_dict: dict) -> list[str]:
@@ -12,7 +18,7 @@ def _extract_artist_ids(track_dict: dict) -> list[str]:
 
 
 class SpotifyAdapter(BlendAdapter):
-    PLATFORM = "spotify"
+    PLATFORM = Platform.SPOTIFY
 
     def __init__(self, user_id: str):
         self._client = SpotifyClient(user_id=user_id)
@@ -21,8 +27,9 @@ class SpotifyAdapter(BlendAdapter):
         scores: dict[str, float] = {}
         artist_ids_by_uri: dict[str, list[str]] = {}
 
-        for time_range, weight in time_weights.items():
-            self._score_time_range(time_range, weight, scores, artist_ids_by_uri)  # type: ignore[arg-type]
+        for key, weight in time_weights.items():
+            time_range = _TIME_WEIGHT_KEY_TO_RANGE[key]
+            self._score_time_range(time_range, weight, scores, artist_ids_by_uri)
 
         scored_tracks = [
             ScoredTrack(
@@ -45,7 +52,7 @@ class SpotifyAdapter(BlendAdapter):
 
     def _score_time_range(
         self,
-        time_range: Literal["short_term", "medium_term", "long_term"],
+        time_range: TimeRange,
         weight: float,
         scores: dict[str, float],
         artist_ids_by_uri: dict[str, list[str]],

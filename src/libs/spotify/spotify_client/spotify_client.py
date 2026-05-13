@@ -1,10 +1,11 @@
 from collections.abc import Callable
-from typing import ClassVar, Literal
+from typing import ClassVar
 
 from spotipy import CacheFileHandler, Spotify, SpotifyOAuth
 
 from libs.common.util.data_util import chunk_generator
 from libs.spotify.config import CONFIG
+from libs.spotify.data_model.time_range import TimeRange
 
 
 class SpotifyClient(Spotify):
@@ -45,9 +46,7 @@ class SpotifyClient(Spotify):
         for chunk in chunk_generator(iterable=track_uris, n=self.PUT_ITEM_LIMIT):
             self.playlist_add_items(playlist_id, chunk)
 
-    def fetch_top_tracks(
-        self, time_range: Literal["short_term", "medium_term", "long_term"], limit: int = 50
-    ) -> list[dict]:
+    def fetch_top_tracks(self, time_range: TimeRange, limit: int = 50) -> list[dict]:
         result = self.current_user_top_tracks(limit=limit, time_range=time_range)
         return result["items"]
 

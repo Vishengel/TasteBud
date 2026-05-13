@@ -1,12 +1,13 @@
 from pydantic import BaseModel, Field
 
 from libs.blend.data_models.blend_config import BlendConfig
+from libs.blend.data_models.enums import Platform
 from libs.common.data_models.playlist import Playlist
 
 
 class BlendParticipant(BaseModel):
     user_id: str
-    platform: str = "spotify"
+    platform: Platform = Platform.SPOTIFY
 
 
 class BlendRequest(BaseModel):

@@ -6,7 +6,7 @@ from spotipy import SpotifyException
 
 from libs.blend.adapters.adapter_factory import make_adapter
 from libs.blend.blend_engine import BlendEngine
-from services.blend.server.data_model import BlendParticipant, BlendRequest, BlendResponse, HealthResponse
+from services.blend.server.data_model import BlendRequest, BlendResponse, HealthResponse
 from services.blend.server.exception_handlers import spotify_exception_handler
 from services.blend.server.log_config import LOG_CONFIG
 
@@ -24,13 +24,9 @@ def make_service():
     return app_service
 
 
-def _all_participants(body: BlendRequest) -> list[BlendParticipant]:
-    return [body.initiator, *body.participants]
-
-
 @router.post("/api/v1/blend")
 async def create_blend(body: BlendRequest) -> BlendResponse:
-    all_participants = _all_participants(body)
+    all_participants = [body.initiator, *body.participants]
     logger.info("Received blend request for users: %s", [p.user_id for p in all_participants])
 
     adapters = [make_adapter(p.user_id, p.platform) for p in all_participants]

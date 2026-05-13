@@ -26,17 +26,17 @@ class BlendEngine:
         return result
 
     def _merge_profiles(self, profiles: list[UserTasteProfile]) -> list[ScoredTrack]:
-        aggregated: dict[str, ScoredTrack] = {}
+        """Combine scored tracks across users, summing scores for tracks that appear in multiple profiles."""
+        scores: dict[str, float] = {}
+        meta: dict[str, ScoredTrack] = {}
 
         for profile in profiles:
             for track in profile.scored_tracks:
-                if track.uri in aggregated:
-                    existing = aggregated[track.uri]
-                    aggregated[track.uri] = existing.model_copy(update={"score": existing.score + track.score})
-                else:
-                    aggregated[track.uri] = track
+                scores[track.uri] = scores.get(track.uri, 0.0) + track.score
+                if track.uri not in meta:
+                    meta[track.uri] = track
 
-        return list(aggregated.values())
+        return [meta[uri].model_copy(update={"score": score}) for uri, score in scores.items()]
 
     def _find_shared_artist_ids(self, profiles: list[UserTasteProfile]) -> list[str]:
         artist_counts = Counter(artist_id for profile in profiles for artist_id in profile.top_artist_ids)
