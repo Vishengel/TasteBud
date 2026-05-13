@@ -1,0 +1,81 @@
+from typing import Literal
+
+from libs.blend.adapters.base_adapter import BlendAdapter
+from libs.blend.data_models.scored_track import ScoredTrack
+from libs.blend.data_models.user_taste_profile import UserTasteProfile
+from libs.common.data_models.playlist import Playlist
+from libs.spotify.spotify_client.spotify_client import SpotifyClient
+
+
+def _extract_artist_ids(track_dict: dict) -> list[str]:
+    return [artist["id"] for artist in track_dict["artists"]]
+
+
+class SpotifyAdapter(BlendAdapter):
+    PLATFORM = "spotify"
+
+    def __init__(self, user_id: str):
+        self._client = SpotifyClient(user_id=user_id)
+
+    def get_taste_profile(self, user_id: str, time_weights: dict[str, float]) -> UserTasteProfile:
+        scores: dict[str, float] = {}
+        artist_ids_by_uri: dict[str, list[str]] = {}
+
+        for time_range, weight in time_weights.items():
+            self._score_time_range(time_range, weight, scores, artist_ids_by_uri)  # type: ignore[arg-type]
+
+        scored_tracks = [
+            ScoredTrack(
+                uri=uri,
+                platform=self.PLATFORM,
+                score=score,
+                artist_ids=artist_ids_by_uri[uri],
+            )
+            for uri, score in scores.items()
+        ]
+
+        top_artist_ids = list({artist_id for track in scored_tracks for artist_id in track.artist_ids})
+
+        return UserTasteProfile(
+            user_id=user_id,
+            platform=self.PLATFORM,
+            scored_tracks=scored_tracks,
+            top_artist_ids=top_artist_ids,
+        )
+
+    def _score_time_range(
+        self,
+        time_range: Literal["short_term", "medium_term", "long_term"],
+        weight: float,
+        scores: dict[str, float],
+        artist_ids_by_uri: dict[str, list[str]],
+    ) -> None:
+        tracks = self._client.fetch_top_tracks(time_range=time_range)
+        for rank, track_dict in enumerate(tracks, start=1):
+            uri = track_dict["uri"]
+            scores[uri] = scores.get(uri, 0.0) + (1.0 / rank) * weight
+            if uri not in artist_ids_by_uri:
+                artist_ids_by_uri[uri] = _extract_artist_ids(track_dict)
+
+    def get_artist_top_tracks(self, artist_id: str) -> list[ScoredTrack]:
+        tracks = self._client.fetch_artist_top_tracks(artist_id)
+        return [
+            ScoredTrack(
+                uri=t["uri"],
+                platform=self.PLATFORM,
+                score=0.0,
+                artist_ids=_extract_artist_ids(t),
+            )
+            for t in tracks
+        ]
+
+    def create_playlist(self, user_id: str, name: str, track_uris: list[str]) -> Playlist:
+        playlist_dict = self._client.user_playlist_create(user=user_id, name=name, public=False)
+        playlist_id = playlist_dict["id"]
+        self._client.replace_tracks_in_playlist(playlist_id, track_uris)
+        return Playlist(
+            id=playlist_id,
+            name=playlist_dict["name"],
+            external_url=playlist_dict["external_urls"]["spotify"],
+            n_tracks=len(track_uris),
+        )
