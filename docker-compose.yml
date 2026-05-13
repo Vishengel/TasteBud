@@ -1,7 +1,7 @@
 services:
-  event-scanner-ui:
+  tastebud:
     image: tastebud
-    container_name: tastebud-event-scanner-ui
+    container_name: tastebud
     ports:
       - "8000:8000"
     volumes:
