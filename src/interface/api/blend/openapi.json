@@ -1,0 +1,249 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Blend Service",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/blend": {
+      "post": {
+        "summary": "Create Blend",
+        "operationId": "create_blend_api_v1_blend_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlendRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BlendConfig": {
+        "properties": {
+          "playlist_name": {
+            "type": "string",
+            "title": "Playlist Name"
+          },
+          "target_size": {
+            "type": "integer",
+            "title": "Target Size",
+            "default": 50
+          },
+          "time_weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Time Weights",
+            "default": {
+              "long": 0.5,
+              "medium": 0.3,
+              "short": 0.2
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "playlist_name"
+        ],
+        "title": "BlendConfig"
+      },
+      "BlendParticipant": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "platform": {
+            "$ref": "#/components/schemas/Platform",
+            "default": "spotify"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "BlendParticipant"
+      },
+      "BlendRequest": {
+        "properties": {
+          "initiator": {
+            "$ref": "#/components/schemas/BlendParticipant"
+          },
+          "participants": {
+            "items": {
+              "$ref": "#/components/schemas/BlendParticipant"
+            },
+            "type": "array",
+            "title": "Participants"
+          },
+          "config": {
+            "$ref": "#/components/schemas/BlendConfig"
+          }
+        },
+        "type": "object",
+        "required": [
+          "initiator",
+          "participants",
+          "config"
+        ],
+        "title": "BlendRequest"
+      },
+      "BlendResponse": {
+        "properties": {
+          "playlist": {
+            "$ref": "#/components/schemas/Playlist"
+          }
+        },
+        "type": "object",
+        "required": [
+          "playlist"
+        ],
+        "title": "BlendResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "This is a static response indicating the server is responsive."
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse"
+      },
+      "Platform": {
+        "type": "string",
+        "enum": [
+          "spotify"
+        ],
+        "title": "Platform"
+      },
+      "Playlist": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "external_url": {
+            "type": "string",
+            "title": "External Url"
+          },
+          "n_tracks": {
+            "type": "integer",
+            "title": "N Tracks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "external_url",
+          "n_tracks"
+        ],
+        "title": "Playlist"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
+}
