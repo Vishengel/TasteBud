@@ -1,0 +1,29 @@
+source_roots = ["src"]
+
+[[modules]]
+path = "interface.api"
+depends_on = ["application", "domain", "common"]
+
+[[modules]]
+path = "interface.ui"
+depends_on = ["application", "domain", "common"]
+
+[[modules]]
+path = "application"
+depends_on = ["domain", "infrastructure", "common"]
+
+[[modules]]
+path = "domain"
+depends_on = []
+
+[[modules]]
+path = "infrastructure"
+depends_on = ["common", "domain"]
+
+[[modules]]
+path = "common"
+depends_on = []
+
+[[modules]]
+path = "graph"
+depends_on = ["infrastructure", "domain", "common"]

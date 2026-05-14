@@ -1,0 +1,268 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Playlist Manager Service",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/playlists/{user_id}": {
+      "get": {
+        "summary": "Get Playlists",
+        "operationId": "get_playlists_api_v1_playlists__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPlaylistsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/playlists/{user_id}/combine": {
+      "post": {
+        "summary": "Combine Playlists",
+        "operationId": "combine_playlists_api_v1_playlists__user_id__combine_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CombinePlaylistsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CombinePlaylistsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CombinePlaylistsRequest": {
+        "properties": {
+          "playlist_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Playlist Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "playlist_ids"
+        ],
+        "title": "CombinePlaylistsRequest"
+      },
+      "CombinePlaylistsResponse": {
+        "properties": {
+          "combined_playlist": {
+            "$ref": "#/components/schemas/PlaylistRef"
+          }
+        },
+        "type": "object",
+        "required": [
+          "combined_playlist"
+        ],
+        "title": "CombinePlaylistsResponse"
+      },
+      "GetPlaylistsResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "playlists": {
+            "items": {
+              "$ref": "#/components/schemas/PlaylistRef"
+            },
+            "type": "array",
+            "title": "Playlists"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "playlists"
+        ],
+        "title": "GetPlaylistsResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "This is a static response indicating the server is responsive."
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse"
+      },
+      "PlaylistRef": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "external_url": {
+            "type": "string",
+            "title": "External Url"
+          },
+          "n_tracks": {
+            "type": "integer",
+            "title": "N Tracks"
+          },
+          "owner_id": {
+            "type": "string",
+            "title": "Owner Id"
+          },
+          "generated_by_tastebud": {
+            "type": "boolean",
+            "title": "Generated By Tastebud",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "external_url",
+          "n_tracks",
+          "owner_id"
+        ],
+        "title": "PlaylistRef"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
+}

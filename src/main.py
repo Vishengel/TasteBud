@@ -2,17 +2,16 @@ from fastapi import FastAPI
 from nicegui import ui
 from starlette.responses import RedirectResponse
 
-import services.blend.nicegui_ui.main
-import services.event_scanner.nicegui_ui.main
-import services.playlist_manager.nicegui_ui.main  # noqa: F401 — registers /playlist-manager page
-from services.blend.server.app import app as blend_app
-from services.event_scanner.server.app import app as event_scanner_app
-from services.playlist_manager.server.app import app as playlist_manager_app
+from base_config import BaseConfig
+from interface.api.blend.app import app as blend_app
+from interface.api.event_scanner.app import app as event_scanner_app
+from interface.api.playlist_manager.app import app as playlist_manager_app
 
 combined = FastAPI(title="TasteBud")
 combined.mount("/event-scanner-api", event_scanner_app)
 combined.mount("/playlist-manager-api", playlist_manager_app)
 combined.mount("/blend-api", blend_app)
+BaseConfig.ensure_dirs()
 
 
 @ui.page("/")
