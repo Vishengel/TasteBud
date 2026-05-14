@@ -15,14 +15,17 @@ NAV_LINKS = [
 
 CSS_VARS = """
 :root {
-    --bg:         #0f0f0f;
-    --surface:    #1a1a2e;
-    --border:     #2d2d4e;
-    --accent:     #8B5CF6;
-    --accent-dim: #6D28D9;
-    --text:       #ffffff;
-    --muted:      #a0a0a0;
-    --accent-hover: rgba(139, 92, 246, 0.08);
+    --bg:           #070b18;
+    --surface:      #0d1630;
+    --border:       #16213a;
+    --accent:       #818CF8;
+    --accent-dim:   #6366F1;
+    --text:         #e8eaf6;
+    --muted:        #6878a0;
+    --accent-hover: rgba(129, 140, 248, 0.08);
+
+    /* override Quasar's primary so buttons/focus rings use our accent */
+    --q-primary: #818CF8;
 }
 
 body {
@@ -34,7 +37,7 @@ body {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px var(--surface) inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset !important;
     -webkit-text-fill-color: var(--text) !important;
 }
 
@@ -59,31 +62,101 @@ input:-webkit-autofill:focus {
     background: var(--surface) !important;
     border: 1px solid var(--border) !important;
     border-radius: 12px !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
 }
 
-/* primary button */
-.tb-btn {
+/* primary button — target the inner Quasar element */
+.tb-btn.q-btn {
     background: var(--accent) !important;
     color: var(--text) !important;
     border-radius: 8px !important;
+    font-weight: 600 !important;
 }
-.tb-btn:hover {
+.tb-btn.q-btn:hover {
     background: var(--accent-dim) !important;
 }
+.tb-btn.q-btn .q-focus-helper {
+    display: none !important;
+}
+.tb-btn.q-btn .q-btn__content {
+    color: var(--text) !important;
+}
+/* catch Quasar's bg-primary utility class used internally */
+.bg-primary { background: var(--accent) !important; }
+.text-primary { color: var(--accent) !important; }
 
-/* inputs */
+/* inputs — outlined variant */
 .tb-input .q-field__control {
-    background: var(--surface) !important;
-    border: 1px solid var(--border) !important;
+    background: rgba(255,255,255,0.04) !important;
     border-radius: 8px !important;
     color: var(--text) !important;
 }
-.tb-input .q-field__label,
-.tb-input input {
+.tb-input.q-field--outlined .q-field__control:before {
+    border-color: var(--border) !important;
+    border-radius: 8px !important;
+}
+.tb-input.q-field--outlined .q-field__control:hover:before {
+    border-color: var(--accent) !important;
+}
+.tb-input.q-field--outlined.q-field--focused .q-field__control:after {
+    border-color: var(--accent) !important;
+    border-radius: 8px !important;
+}
+.tb-input .q-field__label {
+    color: var(--muted) !important;
+}
+.tb-input.q-field--float .q-field__label {
+    color: var(--accent) !important;
+}
+.tb-input input,
+.tb-input textarea {
+    color: var(--text) !important;
+}
+
+/* selects */
+.tb-select .q-field__control {
+    background: rgba(255,255,255,0.04) !important;
+    border-radius: 8px !important;
+}
+.tb-select.q-field--outlined .q-field__control:before {
+    border-color: var(--border) !important;
+    border-radius: 8px !important;
+}
+.tb-select.q-field--outlined .q-field__control:hover:before {
+    border-color: var(--accent) !important;
+}
+.tb-select.q-field--outlined.q-field--focused .q-field__control:after {
+    border-color: var(--accent) !important;
+    border-radius: 8px !important;
+}
+.tb-select .q-field__label {
+    color: var(--muted) !important;
+}
+.tb-select.q-field--float .q-field__label {
+    color: var(--accent) !important;
+}
+.tb-select .q-field__native,
+.tb-select .q-field__input {
+    color: var(--text) !important;
+}
+
+/* dropdown menu */
+.q-menu {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+}
+.q-item:hover {
+    background: var(--accent-hover) !important;
+}
+.q-item__label {
     color: var(--text) !important;
 }
 
 /* tables */
+.tb-table {
+    width: 100% !important;
+}
 .tb-table .q-table {
     background: var(--surface) !important;
     color: var(--text) !important;
@@ -92,6 +165,12 @@ input:-webkit-autofill:focus {
     background: var(--surface) !important;
     color: var(--accent) !important;
     border-bottom: 1px solid var(--border) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
+}
+.tb-table tbody tr td {
+    border-bottom: 1px solid var(--border) !important;
+    color: var(--text) !important;
 }
 .tb-table tbody tr:hover td {
     background: var(--accent-hover) !important;
@@ -102,6 +181,11 @@ input:-webkit-autofill:focus {
 async def common_layout(nicegui_page: NiceGUIPage, active_route: str = ""):
     ui.dark_mode(True)
     ui.add_css(CSS_VARS)
+    ui.add_body_html(
+        '<script>document.addEventListener("DOMContentLoaded",()=>{'
+        'if(window.Quasar){Quasar.setCssVar("primary","#818CF8");}'
+        "});</script>"
+    )
 
     with (
         ui.header()

@@ -80,6 +80,7 @@ class PlaylistsPage(NiceGUIPage):
             with ui.row().classes("items-center gap-4 flex-wrap"):
                 (
                     ui.input("Username", placeholder="Enter username")
+                    .props("outlined")
                     .on("blur", self.update_playlists)
                     .on("keydown.enter", self.update_playlists)
                     .classes("tb-input")
@@ -92,16 +93,16 @@ class PlaylistsPage(NiceGUIPage):
 
             showing_playlists_label = ui.label().style("color: var(--muted); font-size: 0.85rem;")
 
-            with ui.row().classes("w-full gap-4"):
-                with ui.column().classes("w-2/3 gap-2"):
+            with ui.row().classes("w-full gap-4").style("flex-wrap: nowrap;"):
+                with ui.column().classes("gap-2").style("flex: 2; min-width: 0;"):
                     ui.label("User-managed Playlists").style("color: var(--muted);")
                     self.main_table = PlaylistTable([], self.on_select_changed)
-                    self.main_table.table.classes("tb-table h-[65vh] overflow-y-auto")
+                    self.main_table.table.classes("tb-table h-[65vh] overflow-y-auto w-full")
 
-                with ui.column().classes("w-1/3 gap-2"):
+                with ui.column().classes("gap-2").style("flex: 1; min-width: 0;"):
                     ui.label("Tastebud-managed Playlists").style("color: var(--muted);")
                     self.combined_playlist_table = PlaylistTable([], self.on_select_changed)
-                    self.combined_playlist_table.table.classes("tb-table h-[65vh] overflow-y-auto")
+                    self.combined_playlist_table.table.classes("tb-table h-[65vh] overflow-y-auto w-full")
 
             (
                 showing_playlists_label.bind_text_from(

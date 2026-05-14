@@ -65,15 +65,17 @@ class BlendPage(NiceGUIPage):
 
                 ui.label("Users").style("color: var(--muted); font-size: 0.85rem; text-transform: uppercase;")
 
-                initiator_input = ui.input("Your Spotify user ID", placeholder="e.g. jelle").classes("tb-input w-full")
+                initiator_input = ui.input("Your Spotify user ID").props("outlined").classes("tb-input w-full")
                 initiator_input.on("change", lambda e: setattr(self, "initiator_user_id", e.sender.value))
 
                 participant_container = ui.column().classes("w-full gap-2")
 
                 def add_participant():
                     with participant_container:
-                        inp = ui.input(f"Participant {len(self.participant_inputs) + 1} user ID").classes(
-                            "tb-input w-full"
+                        inp = (
+                            ui.input(f"Participant {len(self.participant_inputs) + 1} user ID")
+                            .props("outlined")
+                            .classes("tb-input w-full")
                         )
                         self.participant_inputs.append(inp)
 
@@ -85,7 +87,7 @@ class BlendPage(NiceGUIPage):
                     "color: var(--muted); font-size: 0.85rem; text-transform: uppercase;"
                 )
 
-                self.playlist_name_input = ui.input("Playlist name").classes("tb-input w-full")
+                self.playlist_name_input = ui.input("Playlist name").props("outlined").classes("tb-input w-full")
 
                 with ui.column().classes("w-full gap-1"):
                     ui.label("Target size").style("color: var(--muted); font-size: 0.85rem;")

@@ -26,7 +26,7 @@ class EventScannerPage(NiceGUIPage):
                 ui.label("Event Scanner").style("color: var(--accent); font-size: 1.5rem; font-weight: 700;")
 
                 with ui.row().classes("gap-4 items-center flex-wrap"):
-                    ui.date_input("Start date", value=self.start_date.isoformat()).bind_value(
+                    ui.date_input("Start date", value=self.start_date.isoformat()).props("outlined").bind_value(
                         self, "start_date"
                     ).classes("tb-input")
 
@@ -38,14 +38,15 @@ class EventScannerPage(NiceGUIPage):
                             ui.select(
                                 label=f"{label} genre",
                                 options=genres,
-                            ).bind_value(self._source_genre, source_type).bind_visibility_from(
+                            ).props("outlined").bind_value(self._source_genre, source_type).bind_visibility_from(
                                 self._source_enabled, source_type
-                            ).classes("tb-input")
+                            ).classes("tb-input tb-select")
 
                     ui.checkbox("LastFM scoring").bind_value(self.relevancy_score_registry.lastfm_score, "active")
 
                     (
                         ui.input("LastFM username")
+                        .props("outlined")
                         .on("blur", self.relevancy_score_registry.lastfm_score.prepare_top_artists)
                         .on("keydown.enter", self.relevancy_score_registry.lastfm_score.prepare_top_artists)
                         .bind_value(self.relevancy_score_registry.lastfm_score, "username")
@@ -57,7 +58,9 @@ class EventScannerPage(NiceGUIPage):
                         label="Period",
                         options=[p.value for p in LastFMPeriodOption],
                         value=self.relevancy_score_registry.lastfm_score.period,
-                    ).bind_visibility_from(self.relevancy_score_registry.lastfm_score, "active").classes("tb-input")
+                    ).props("outlined").bind_visibility_from(
+                        self.relevancy_score_registry.lastfm_score, "active"
+                    ).classes("tb-input tb-select")
 
                     self.lastfm_spinner = ui.spinner(size="sm").bind_visibility_from(
                         self.relevancy_score_registry.lastfm_score, "loading_top_artists"
