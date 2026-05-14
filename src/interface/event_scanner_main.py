@@ -1,9 +1,9 @@
 from nicegui import ui
 from starlette.responses import RedirectResponse
 
-from common.ui.layout import common_layout
 from interface.api.event_scanner.app import app
 from interface.ui.event_scanner.event_scanner_page import EventScannerPage
+from interface.ui.layout import common_layout
 
 
 @ui.page("/event-scanner")

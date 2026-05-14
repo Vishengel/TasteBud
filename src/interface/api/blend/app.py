@@ -6,7 +6,7 @@ from spotipy import SpotifyException
 
 from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine
-from common.spotify_exception_handler import spotify_exception_handler
+from infrastructure.spotify.exception_handler import spotify_exception_handler
 from interface.api.blend.models import BlendRequest, BlendResponse
 from interface.api.health_check import health_router
 

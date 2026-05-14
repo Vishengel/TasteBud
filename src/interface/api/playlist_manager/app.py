@@ -5,7 +5,7 @@ from fastapi import APIRouter, FastAPI, HTTPException
 from spotipy import SpotifyException
 
 from application.playlist_manager.service import make_playlist_manager
-from common.spotify_exception_handler import spotify_exception_handler
+from infrastructure.spotify.exception_handler import spotify_exception_handler
 from interface.api.health_check import health_router
 from interface.api.playlist_manager.models import (
     CombinePlaylistsRequest,

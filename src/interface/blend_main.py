@@ -1,9 +1,9 @@
 from nicegui import ui
 from starlette.responses import RedirectResponse
 
-from common.ui.layout import common_layout
 from interface.api.blend.app import app
 from interface.ui.blend.blend_page import BlendPage
+from interface.ui.layout import common_layout
 
 
 @ui.page("/blend")

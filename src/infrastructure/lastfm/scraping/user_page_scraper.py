@@ -1,7 +1,7 @@
 from typing import ClassVar
 
-from common.scrape.sync_scrape_engine import ScrapeTask, SyncScrapeEngine
 from infrastructure.lastfm.scraping.user_page_html_parser import extract_artist_count_from_user_page
+from infrastructure.scrape.sync_scrape_engine import ScrapeTask, SyncScrapeEngine
 
 
 class UserPageScraper:

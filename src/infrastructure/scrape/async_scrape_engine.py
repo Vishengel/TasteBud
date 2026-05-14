@@ -4,8 +4,8 @@ from asyncio import Semaphore, create_task, gather
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-from common.http.async_httpx_client import AsyncHTTPXClient
-from common.http.http_client import AsyncHttpClient, HttpResponse
+from infrastructure.http.async_httpx_client import AsyncHTTPXClient
+from infrastructure.http.http_client import AsyncHttpClient, HttpResponse
 
 
 @dataclass

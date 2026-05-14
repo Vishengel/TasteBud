@@ -4,8 +4,8 @@ import logging
 
 from bs4 import BeautifulSoup, Comment
 
-from common.scrape.exceptions import ElementNotFound
 from domain.events.models import Artist, Event, Location, Venue
+from infrastructure.scrape.exceptions import ElementNotFound
 
 logger = logging.getLogger(__name__)
 
