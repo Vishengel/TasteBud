@@ -55,7 +55,6 @@ class PlaylistsPage(NiceGUIPage):
     def on_select_changed(self, e: GenericEventArguments):
         pl_dict = e.args["_playlist_object"]
         playlist = Playlist.model_validate(pl_dict)
-
         if e.args["_selected"]:
             self.selected.append(playlist)
         else:
@@ -72,39 +71,40 @@ class PlaylistsPage(NiceGUIPage):
 
         self.combined_playlist_table.rows.append(_playlist_to_row(len(self.combined_playlist_table.rows) + 1, result))
         self.combined_playlist_table.update()
-
         return result
 
     async def create_page(self):
-        with ui.left_drawer():
-            ui.label("Actions").classes("text-h6")
-            ui.button("Combine selected", on_click=self.combine)
+        with ui.column().classes("w-full p-6 gap-4"):
+            ui.label("Playlist Manager").style("color: var(--accent); font-size: 1.5rem; font-weight: 700;")
 
-        ui.label("Playlist Manager").classes("text-h2").style("color: #6E93D6")
-        (
-            ui.input("Username", placeholder="Enter username")
-            .on("blur", self.update_playlists)
-            .on("keydown.enter", self.update_playlists)
-        )
-        showing_playlists_label = ui.label()
+            with ui.row().classes("items-center gap-4 flex-wrap"):
+                (
+                    ui.input("Username", placeholder="Enter username")
+                    .on("blur", self.update_playlists)
+                    .on("keydown.enter", self.update_playlists)
+                    .classes("tb-input")
+                )
+                ui.checkbox(
+                    "User-owned only",
+                    on_change=lambda e: self.main_table.filter_by_owner(e.value, self.user_id),
+                )
+                ui.button("Combine selected", on_click=self.combine).classes("tb-btn")
 
-        ui.checkbox(
-            "User-owned only",
-            on_change=lambda e: self.main_table.filter_by_owner(e.value, self.user_id),
-        )
-        with ui.row().classes("w-full h-full no-wrap gap-4"):
-            with ui.column().classes("w-2/3 h-[70vh] overflow-hidden"):
-                ui.label("User-managed Playlists")
-                self.main_table = PlaylistTable([], self.on_select_changed)
-                self.main_table.table.classes("h-full overflow-y-auto whitespace-normal break-words")
+            showing_playlists_label = ui.label().style("color: var(--muted); font-size: 0.85rem;")
 
-            with ui.column().classes("w-1/3 h-[70vh] overflow-hidden"):
-                ui.label("Tastebud-managed Playlists")
-                self.combined_playlist_table = PlaylistTable([], self.on_select_changed)
-                self.combined_playlist_table.table.classes("h-full overflow-y-auto whitespace-normal break-words")
+            with ui.row().classes("w-full gap-4"):
+                with ui.column().classes("w-2/3 gap-2"):
+                    ui.label("User-managed Playlists").style("color: var(--muted);")
+                    self.main_table = PlaylistTable([], self.on_select_changed)
+                    self.main_table.table.classes("tb-table h-[65vh] overflow-y-auto")
 
-        (
-            showing_playlists_label.bind_text_from(
-                self, "user_id", lambda user_id: f"Showing all playlists for user {user_id}"
-            ).bind_visibility_from(self.main_table, "has_rows")
-        )
+                with ui.column().classes("w-1/3 gap-2"):
+                    ui.label("Tastebud-managed Playlists").style("color: var(--muted);")
+                    self.combined_playlist_table = PlaylistTable([], self.on_select_changed)
+                    self.combined_playlist_table.table.classes("tb-table h-[65vh] overflow-y-auto")
+
+            (
+                showing_playlists_label.bind_text_from(
+                    self, "user_id", lambda user_id: f"Showing playlists for {user_id}"
+                ).bind_visibility_from(self.main_table, "has_rows")
+            )

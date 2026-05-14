@@ -11,18 +11,11 @@ class PlaylistTable:
         self.on_select_changed = on_select_changed
 
         self.columns = [
-            {"name": "idx", "label": "Index", "field": "idx", "required": True, "align": "left", "sortable": True},
-            {
-                "name": "playlist_name",
-                "label": "Playlist Name",
-                "field": "playlist_name",
-                "required": True,
-                "align": "left",
-                "text-wrap": "wrap",
-            },
-            {"name": "n_tracks", "label": "No. of Tracks", "field": "n_tracks", "sortable": True},
+            {"name": "idx", "label": "#", "field": "idx", "required": True, "align": "left", "sortable": True},
+            {"name": "playlist_name", "label": "Playlist", "field": "playlist_name", "required": True, "align": "left"},
+            {"name": "n_tracks", "label": "Tracks", "field": "n_tracks", "sortable": True},
             {"name": "owner", "label": "Owner", "field": "owner", "sortable": True},
-            {"name": "combine", "label": "Combine", "field": "combine", "align": "center"},
+            {"name": "combine", "label": "Select", "field": "combine", "align": "center"},
         ]
 
         self.table: Table = ui.table(columns=self.columns, rows=self.rows, row_key="playlist_name")
