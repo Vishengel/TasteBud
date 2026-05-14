@@ -19,8 +19,7 @@ class BlendPage(NiceGUIPage):
         self.participant_inputs: list[ui.input] = []
         self.playlist_name_input: ui.input | None = None
         self.target_size_slider: ui.slider | None = None
-        self.result_label: ui.label | None = None
-        self.result_link: ui.link | None = None
+        self.result_card: ui.card | None = None
 
     def _get_all_user_ids(self) -> list[str]:
         participants = [inp.value for inp in self.participant_inputs if inp.value.strip()]
@@ -48,41 +47,56 @@ class BlendPage(NiceGUIPage):
         except Exception as exc:
             ui.notify(f"Blend failed: {exc}", type="negative")
             return
-        self.result_label.set_text(f"Created: {playlist.name} ({playlist.n_tracks} tracks)")
-        self.result_link.set_target(playlist.external_url)
-        self.result_link.set_text("Open on Spotify")
-        self.result_label.set_visibility(True)
-        self.result_link.set_visibility(True)
+
+        result_card = self.result_card
+        if result_card is None:
+            return
+        result_card.clear()
+        with result_card:
+            ui.label(playlist.name).style("color: var(--text); font-size: 1.1rem; font-weight: 600;")
+            ui.label(f"{playlist.n_tracks} tracks").style("color: var(--muted);")
+            ui.link("Open on Spotify", playlist.external_url).style("color: var(--accent); text-decoration: underline;")
+        result_card.set_visibility(True)
 
     async def create_page(self):
-        ui.label("Blend").classes("text-h2").style("color: #6E93D6")
+        with ui.column().classes("items-center w-full mt-10 gap-6"):
+            with ui.card().classes("tb-card w-full max-w-lg p-6 gap-4"):
+                ui.label("Blend").style("color: var(--accent); font-size: 1.5rem; font-weight: 700;")
 
-        with ui.card().classes("w-full max-w-lg"):
-            ui.label("Users").classes("text-h6")
+                ui.label("Users").style("color: var(--muted); font-size: 0.85rem; text-transform: uppercase;")
 
-            initiator_input = ui.input("Your Spotify user ID", placeholder="e.g. jelle").classes("w-full")
-            initiator_input.on("change", lambda e: setattr(self, "initiator_user_id", e.sender.value))
+                initiator_input = ui.input("Your Spotify user ID", placeholder="e.g. jelle").classes("tb-input w-full")
+                initiator_input.on("change", lambda e: setattr(self, "initiator_user_id", e.sender.value))
 
-            participant_container = ui.column().classes("w-full gap-2")
+                participant_container = ui.column().classes("w-full gap-2")
 
-            def add_participant():
-                with participant_container:
-                    inp = ui.input(f"Participant {len(self.participant_inputs) + 1} user ID").classes("w-full")
-                    self.participant_inputs.append(inp)
+                def add_participant():
+                    with participant_container:
+                        inp = ui.input(f"Participant {len(self.participant_inputs) + 1} user ID").classes(
+                            "tb-input w-full"
+                        )
+                        self.participant_inputs.append(inp)
 
-            ui.button("+ Add participant", on_click=add_participant).classes("mt-2")
+                ui.button("+ Add participant", on_click=add_participant).props("flat").style("color: var(--accent);")
 
-            ui.separator()
-            ui.label("Playlist settings").classes("text-h6")
+                ui.separator().style("border-color: var(--border);")
 
-            self.playlist_name_input = ui.input("Playlist name").classes("w-full")
-            ui.label("Target size")
-            self.target_size_slider = ui.slider(min=20, max=100, value=50).classes("w-full")
-            ui.label().bind_text_from(self.target_size_slider, "value", lambda v: f"{int(v)} tracks")
+                ui.label("Playlist settings").style(
+                    "color: var(--muted); font-size: 0.85rem; text-transform: uppercase;"
+                )
 
-            ui.button("Generate Blend", on_click=self._run_blend).classes("mt-4 w-full")
+                self.playlist_name_input = ui.input("Playlist name").classes("tb-input w-full")
 
-        self.result_label = ui.label("").classes("text-h6 mt-4")
-        self.result_label.set_visibility(False)
-        self.result_link = ui.link("", target="").classes("mt-2")
-        self.result_link.set_visibility(False)
+                with ui.column().classes("w-full gap-1"):
+                    ui.label("Target size").style("color: var(--muted); font-size: 0.85rem;")
+                    self.target_size_slider = (
+                        ui.slider(min=20, max=100, value=50).classes("w-full").style("accent-color: var(--accent);")
+                    )
+                    ui.label().bind_text_from(self.target_size_slider, "value", lambda v: f"{int(v)} tracks").style(
+                        "color: var(--muted); font-size: 0.8rem;"
+                    )
+
+                ui.button("Generate Blend", on_click=self._run_blend).classes("tb-btn w-full mt-2")
+
+            self.result_card = ui.card().classes("tb-card w-full max-w-lg p-6 gap-2")
+            self.result_card.set_visibility(False)
