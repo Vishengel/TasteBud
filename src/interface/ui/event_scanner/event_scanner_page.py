@@ -42,9 +42,7 @@ class EventScannerPage(NiceGUIPage):
                                 self._source_enabled, source_type
                             ).classes("tb-input")
 
-                    self.last_fm_checkbox = ui.checkbox("LastFM scoring").bind_value(
-                        self.relevancy_score_registry.lastfm_score, "active"
-                    )
+                    ui.checkbox("LastFM scoring").bind_value(self.relevancy_score_registry.lastfm_score, "active")
 
                     (
                         ui.input("LastFM username")
@@ -61,14 +59,14 @@ class EventScannerPage(NiceGUIPage):
                         value=self.relevancy_score_registry.lastfm_score.period,
                     ).bind_visibility_from(self.relevancy_score_registry.lastfm_score, "active").classes("tb-input")
 
-                    self.spinner = ui.spinner(size="sm").bind_visibility_from(
+                    self.lastfm_spinner = ui.spinner(size="sm").bind_visibility_from(
                         self.relevancy_score_registry.lastfm_score, "loading_top_artists"
                     )
 
                 with ui.row().classes("items-center gap-2"):
                     self.scan_button = ui.button("Scan for events", on_click=self._scan_events).classes("tb-btn")
                     self.scan_button.bind_enabled_from(self, "block_scan_button", backward=lambda x: not x)
-                    self.spinner = ui.spinner("audio", size="sm").bind_visibility_from(self, "loading_events")
+                    self.scan_spinner = ui.spinner("audio", size="sm").bind_visibility_from(self, "loading_events")
 
                 columns = [
                     {"name": "hype", "label": "HYPE", "field": "hype", "sortable": True, "align": "left"},
