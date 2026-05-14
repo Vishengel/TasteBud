@@ -1,5 +1,5 @@
 from application.event_scanner.event_sources.event_source_base import EventSource, EventSourceType
-from application.event_scanner.event_sources.podiuminfo_event_source import PodiuminfoEventSource
+from infrastructure.podiuminfo.event_source import PodiuminfoEventSource
 
 
 def event_source_factory(source_types: set[EventSourceType]) -> dict[EventSourceType, EventSource]:
