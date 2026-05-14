@@ -1,13 +1,13 @@
 import logging.config
 
 import uvicorn
-from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi import APIRouter, FastAPI
 from spotipy import SpotifyException
 
 from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine
-from infrastructure.spotify.exception_handler import spotify_exception_handler
 from interface.api.blend.models import BlendRequest, BlendResponse
+from interface.api.exception_handlers import spotify_exception_handler
 from interface.api.health_check import health_router
 
 logger = logging.getLogger(__name__)
@@ -32,22 +32,12 @@ async def create_blend(body: BlendRequest) -> BlendResponse:
     adapters = [make_adapter(p.user_id, p.platform) for p in all_participants]
     engine = BlendEngine(adapters)
 
-    try:
-        tracks = engine.create_blend([p.user_id for p in all_participants], body.config)
-    except SpotifyException as exc:
-        logger.error("Error during blend: %s", exc)
-        raise HTTPException(status_code=exc.code, detail=exc.reason) from exc
-
-    try:
-        playlist = adapters[0].create_playlist(
-            user_id=body.initiator.user_id,
-            name=body.config.playlist_name,
-            track_uris=[t.uri for t in tracks],
-        )
-    except SpotifyException as exc:
-        logger.error("Error creating playlist: %s", exc)
-        raise HTTPException(status_code=exc.code, detail=exc.reason) from exc
-
+    tracks = engine.create_blend([p.user_id for p in all_participants], body.config)
+    playlist = adapters[0].create_playlist(
+        user_id=body.initiator.user_id,
+        name=body.config.playlist_name,
+        track_uris=[t.uri for t in tracks],
+    )
     return BlendResponse(playlist=playlist)
 
 
