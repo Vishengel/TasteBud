@@ -22,6 +22,7 @@ CSS_VARS = """
     --accent-dim: #6D28D9;
     --text:       #ffffff;
     --muted:      #a0a0a0;
+    --accent-hover: rgba(139, 92, 246, 0.08);
 }
 
 body {
@@ -93,7 +94,7 @@ input:-webkit-autofill:focus {
     border-bottom: 1px solid var(--border) !important;
 }
 .tb-table tbody tr:hover td {
-    background: rgba(139, 92, 246, 0.08) !important;
+    background: var(--accent-hover) !important;
 }
 """
 
