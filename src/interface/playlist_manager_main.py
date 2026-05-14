@@ -13,8 +13,10 @@ async def page():
 
 
 if __name__ in {"__main__", "__mp_main__"}:
-    import interface.blend_main
-    import interface.event_scanner_main  # noqa: F401 — registers /event-scanner
+    # isort: off
+    import interface.event_scanner_main
+    import interface.blend_main  # noqa: F401 — registers /blend
+    # isort: on
 
     @ui.page("/")
     async def root():

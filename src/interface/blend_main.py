@@ -13,8 +13,10 @@ async def blend_page():
 
 
 if __name__ in {"__main__", "__mp_main__"}:
+    # isort: off
     import interface.event_scanner_main
     import interface.playlist_manager_main  # noqa: F401 — registers /playlist-manager
+    # isort: on
 
     @ui.page("/")
     async def root():
