@@ -8,6 +8,8 @@ from nicegui.events import GenericEventArguments
 class PlaylistTable:
     def __init__(self, rows: list[dict], on_select_changed: Callable[[GenericEventArguments], None]):
         self.rows = rows
+        self._all_rows = list(rows)
+        self.has_rows: bool = len(rows) > 0
         self.on_select_changed = on_select_changed
 
         self.columns = [
@@ -22,22 +24,22 @@ class PlaylistTable:
         self._install_body_slot()
         self.table.on("row_selected_changed", self.on_select_changed)
 
-    @property
-    def has_rows(self) -> bool:
-        return len(self.rows) > 0
-
     def update(self):
         self.table.rows = self.rows
         self.table.columns = self.columns
+        self.has_rows = len(self.rows) > 0
         self.table.update()
 
     def set_rows(self, rows: list[dict]):
         self.rows = rows
+        self._all_rows = list(rows)
         self.update()
 
     def filter_by_owner(self, show_only_playlists_by_user: bool, user_id: str):
         if show_only_playlists_by_user:
-            self.rows = [r for r in self.rows if r["owner"] == user_id]
+            self.rows = [r for r in self._all_rows if r["owner"] == user_id]
+        else:
+            self.rows = list(self._all_rows)
         self.update()
 
     def _install_body_slot(self):
