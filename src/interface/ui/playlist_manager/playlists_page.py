@@ -1,14 +1,14 @@
 from nicegui import ui
 from nicegui.events import GenericEventArguments
 
-from application.playlist_manager.models import SpotifyPlaylist
 from application.playlist_manager.playlist_manager import PlaylistManager
 from application.playlist_manager.service import make_playlist_manager
 from common.ui.layout import NiceGUIPage
+from domain.playlists.models import Playlist
 from interface.ui.playlist_manager.components.playlists_table import PlaylistTable
 
 
-def _playlist_to_row(idx: int, playlist: SpotifyPlaylist):
+def _playlist_to_row(idx: int, playlist: Playlist):
     return {
         "idx": idx,
         "playlist_name": playlist.name,
@@ -19,7 +19,7 @@ def _playlist_to_row(idx: int, playlist: SpotifyPlaylist):
     }
 
 
-def _get_table_rows(playlists: list[SpotifyPlaylist], return_tastebud_playlists: bool = False):
+def _get_table_rows(playlists: list[Playlist], return_tastebud_playlists: bool = False):
     filtered_playlists = [pl for pl in playlists if pl.generated_by_tastebud == return_tastebud_playlists]
     return [_playlist_to_row(idx, pl) for idx, pl in enumerate(filtered_playlists, start=1)]
 
@@ -27,7 +27,7 @@ def _get_table_rows(playlists: list[SpotifyPlaylist], return_tastebud_playlists:
 class PlaylistsPage(NiceGUIPage):
     def __init__(self):
         self.user_id: str | None = None
-        self.selected: list[SpotifyPlaylist] = []
+        self.selected: list[Playlist] = []
         self.main_table: PlaylistTable | None = None
         self.combined_playlist_table: PlaylistTable | None = None
         self._playlist_manager: PlaylistManager | None = None
@@ -37,7 +37,7 @@ class PlaylistsPage(NiceGUIPage):
             self._playlist_manager = make_playlist_manager()
         return self._playlist_manager
 
-    async def load_playlists(self) -> list[SpotifyPlaylist]:
+    async def load_playlists(self) -> list[Playlist]:
         assert self.user_id
         try:
             return self._get_manager().get_all_playlists_for_user_id(self.user_id)
@@ -54,7 +54,7 @@ class PlaylistsPage(NiceGUIPage):
 
     def on_select_changed(self, e: GenericEventArguments):
         pl_dict = e.args["_playlist_object"]
-        playlist = SpotifyPlaylist.model_validate(pl_dict)
+        playlist = Playlist.model_validate(pl_dict)
 
         if e.args["_selected"]:
             self.selected.append(playlist)
