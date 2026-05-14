@@ -5,13 +5,13 @@ from fastapi import APIRouter, FastAPI
 
 from application.event_scanner.event_sources.event_source_base import EventSourceType
 from application.event_scanner.event_sources.event_source_factory import event_source_factory
-from interface.api.common import health_router
 from interface.api.event_scanner.models import (
     EventSourceOverview,
     FindEventsRequest,
     FindEventsResponse,
     GetEventSourceInfoResponse,
 )
+from interface.api.health_check import health_router
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
