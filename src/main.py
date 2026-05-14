@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from nicegui import ui
 from starlette.responses import RedirectResponse
 
+import interface.blend_main
+import interface.event_scanner_main
+import interface.playlist_manager_main  # noqa: F401 — registers /playlist-manager
 from base_config import BaseConfig
 from interface.api.blend.app import app as blend_app
 from interface.api.event_scanner.app import app as event_scanner_app

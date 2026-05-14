@@ -9,10 +9,12 @@ from interface.ui.layout import common_layout
 @ui.page("/event-scanner")
 async def page():
     event_scanner_page = EventScannerPage()
-    await common_layout(event_scanner_page)
+    await common_layout(event_scanner_page, active_route="/event-scanner")
 
 
 if __name__ in {"__main__", "__mp_main__"}:
+    import interface.blend_main
+    import interface.playlist_manager_main  # noqa: F401 — registers /playlist-manager
 
     @ui.page("/")
     async def root():

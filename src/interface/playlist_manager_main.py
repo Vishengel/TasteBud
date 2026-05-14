@@ -7,16 +7,18 @@ from interface.ui.playlist_manager.playlists_page import PlaylistsPage
 
 
 @ui.page("/playlist-manager")
-async def playlist_manager_page():
+async def page():
     playlists_page = PlaylistsPage()
-    await common_layout(playlists_page)
+    await common_layout(playlists_page, active_route="/playlist-manager")
 
 
 if __name__ in {"__main__", "__mp_main__"}:
+    import interface.blend_main
+    import interface.event_scanner_main  # noqa: F401 — registers /event-scanner
 
     @ui.page("/")
     async def root():
         return RedirectResponse("/playlist-manager")
 
-    ui.run_with(app, title="TasteBud")
-    ui.run(host="0.0.0.0", port=8000, reload=True)
+    ui.run_with(app)
+    ui.run(host="0.0.0.0", port=8003, reload=True)
