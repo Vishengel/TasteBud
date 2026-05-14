@@ -1,42 +1,20 @@
-import datetime
 import logging
 
 import uvicorn
 from fastapi import APIRouter, FastAPI
-from pydantic import BaseModel, Field
 
 from application.event_scanner.event_sources.event_source_base import EventSourceType
 from application.event_scanner.event_sources.event_source_factory import event_source_factory
-from domain.events.models import Event
+from interface.api.common import health_router
+from interface.api.event_scanner.models import (
+    EventSourceOverview,
+    FindEventsRequest,
+    FindEventsResponse,
+    GetEventSourceInfoResponse,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-
-class EventSourceOverview(BaseModel):
-    event_source_type: EventSourceType
-    genres: list[str]
-
-
-class GetEventSourceInfoResponse(BaseModel):
-    event_source_overviews: list[EventSourceOverview]
-
-
-class PodiuminfoSearchParams(BaseModel):
-    start_date: datetime.date | None = datetime.date.today()
-    genre: str | None = None
-
-
-class FindEventsRequest(BaseModel):
-    podiuminfo_params: PodiuminfoSearchParams | None = None
-
-
-class FindEventsResponse(BaseModel):
-    events: list[Event]
-
-
-class HealthResponse(BaseModel):
-    message: str = Field("This is a static response indicating the server is responsive.")
 
 
 def make_service():
@@ -44,6 +22,7 @@ def make_service():
     logger.info("Starting %s...", app_service.title)
     app_service.state.event_source_overviews = event_source_factory({EventSourceType.PODIUMINFO})
     app_service.include_router(router)
+    app_service.include_router(health_router)
     logger.info("Startup done.")
     return app_service
 
@@ -73,11 +52,6 @@ async def find_events(find_events_request: FindEventsRequest) -> FindEventsRespo
         events.extend(new_events)
 
     return FindEventsResponse(events=events)
-
-
-@router.get("/health")
-def health_check() -> HealthResponse:
-    return HealthResponse()
 
 
 app: FastAPI = make_service()

@@ -2,47 +2,23 @@ import logging.config
 
 import uvicorn
 from fastapi import APIRouter, FastAPI, HTTPException
-from pydantic import BaseModel, Field
 from spotipy import SpotifyException
 
 from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine
 from common.spotify_exception_handler import spotify_exception_handler
-from domain.blend.models import BlendConfig, Platform
-from domain.events.models import Playlist
+from interface.api.blend.models import BlendRequest, BlendResponse
+from interface.api.common import health_router
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-
-class BlendParticipant(BaseModel):
-    user_id: str
-    platform: Platform = Platform.SPOTIFY
-
-
-class BlendRequest(BaseModel):
-    initiator: BlendParticipant
-    participants: list[BlendParticipant]
-    config: BlendConfig
-
-
-class BlendResponse(BaseModel):
-    playlist: Playlist
-
-
-class ErrorResponse(BaseModel):
-    code: int
-    reason: str
-
-
-class HealthResponse(BaseModel):
-    message: str = Field("This is a static response indicating the server is responsive.")
 
 
 def make_service():
     app_service = FastAPI(title="Blend Service")
     logger.info("Starting %s...", app_service.title)
     app_service.include_router(router)
+    app_service.include_router(health_router)
     app_service.add_exception_handler(SpotifyException, spotify_exception_handler)
     logger.info("Startup done.")
     return app_service
@@ -73,11 +49,6 @@ async def create_blend(body: BlendRequest) -> BlendResponse:
         raise HTTPException(status_code=exc.code, detail=exc.reason) from exc
 
     return BlendResponse(playlist=playlist)
-
-
-@router.get("/health")
-def health_check() -> HealthResponse:
-    return HealthResponse()
 
 
 app: FastAPI = make_service()

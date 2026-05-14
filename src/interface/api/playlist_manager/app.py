@@ -2,45 +2,20 @@ import logging
 
 import uvicorn
 from fastapi import APIRouter, FastAPI, HTTPException
-from pydantic import BaseModel, Field
 from spotipy import SpotifyException
 
 from application.playlist_manager.service import make_playlist_manager
 from common.spotify_exception_handler import spotify_exception_handler
+from interface.api.common import health_router
+from interface.api.playlist_manager.models import (
+    CombinePlaylistsRequest,
+    CombinePlaylistsResponse,
+    GetPlaylistsResponse,
+    PlaylistRef,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-
-class PlaylistRef(BaseModel):
-    id: str
-    name: str
-    external_url: str
-    n_tracks: int
-    owner_id: str
-    generated_by_tastebud: bool = False
-
-
-class GetPlaylistsResponse(BaseModel):
-    user_id: str
-    playlists: list[PlaylistRef]
-
-
-class CombinePlaylistsRequest(BaseModel):
-    playlist_ids: list[str]
-
-
-class CombinePlaylistsResponse(BaseModel):
-    combined_playlist: PlaylistRef
-
-
-class ErrorResponse(BaseModel):
-    code: int
-    reason: str
-
-
-class HealthResponse(BaseModel):
-    message: str = Field("This is a static response indicating the server is responsive.")
 
 
 def make_service():
@@ -48,6 +23,7 @@ def make_service():
     logger.info("Starting %s...", app_service.title)
     app_service.state.playlist_manager = make_playlist_manager()
     app_service.include_router(router)
+    app_service.include_router(health_router)
     app_service.add_exception_handler(SpotifyException, spotify_exception_handler)
     logger.info("Startup done.")
     return app_service
@@ -80,11 +56,6 @@ async def combine_playlists(user_id: str, body: CombinePlaylistsRequest) -> Comb
             status_code=exc.code, detail=f"Error combining playlists for user {user_id}: {exc.reason}"
         ) from exc
     return CombinePlaylistsResponse(combined_playlist=PlaylistRef.model_validate(combined_playlist.model_dump()))
-
-
-@router.get("/health")
-def health_check() -> HealthResponse:
-    return HealthResponse()
 
 
 app: FastAPI = make_service()
