@@ -5,8 +5,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from spotipy import CacheFileHandler, Spotify, SpotifyClientCredentials
 
+from infrastructure.spotify.history.spotify_history_builder import SpotifyHistoryBuilder
 from libs.spotify.config import CONFIG
-from libs.spotify.spotify_history.spotify_history_builder import SpotifyHistoryBuilder
 
 logging.basicConfig(
     format="%(asctime)s,%(msecs)03d %(levelname)-1s [%(filename)s:%(lineno)d] %(message)s",
