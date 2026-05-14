@@ -8,7 +8,7 @@ from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine
 from common.spotify_exception_handler import spotify_exception_handler
 from interface.api.blend.models import BlendRequest, BlendResponse
-from interface.api.common import health_router
+from interface.api.health_check import health_router
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
