@@ -14,14 +14,7 @@ RUN uv sync --frozen --no-dev
 
 # Copy only what the app needs
 COPY base_config.py base_config.py
-COPY src/services/event_scanner src/services/event_scanner
-COPY src/services/playlist_manager src/services/playlist_manager
-COPY src/main.py src/main.py
-COPY src/libs/common src/libs/common
-COPY src/libs/geolocation src/libs/geolocation
-COPY src/libs/lastfm src/libs/lastfm
-COPY src/libs/podiuminfo src/libs/podiuminfo
-COPY src/libs/spotify src/libs/spotify
+COPY src/ src/
 
 FROM python:3.12-slim AS runtime
 
