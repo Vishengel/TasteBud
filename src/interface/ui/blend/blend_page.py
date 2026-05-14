@@ -3,7 +3,7 @@ from datetime import datetime
 from nicegui import ui
 
 from application.blend.adapter_factory import make_adapter
-from application.blend.blend_engine import BlendEngine
+from application.blend.blend_engine import BlendEngine, build_blend_description
 from domain.blend.models import BlendConfig, Platform
 from interface.ui.layout import NiceGUIPage
 
@@ -39,10 +39,12 @@ class BlendPage(NiceGUIPage):
             adapters = [make_adapter(uid, Platform.SPOTIFY) for uid in all_user_ids]
             engine = BlendEngine(adapters)
             tracks = engine.create_blend(all_user_ids, config)
+            description = build_blend_description(all_user_ids, config)
             playlist = adapters[0].create_playlist(
                 user_id=all_user_ids[0],
                 name=config.playlist_name,
                 track_uris=[t.uri for t in tracks],
+                description=description,
             )
         except Exception as exc:
             ui.notify(f"Blend failed: {exc}", type="negative")

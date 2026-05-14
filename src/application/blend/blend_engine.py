@@ -5,12 +5,22 @@ from domain.blend.models import BlendConfig, ScoredTrack, UserTasteProfile
 from domain.events.models import Playlist
 
 
+def build_blend_description(user_ids: list[str], config: BlendConfig) -> str:
+    weights = ", ".join(f"{k}:{v}" for k, v in config.time_weights.items())
+    return (
+        f"TasteBud blend of {' + '.join(user_ids)}. "
+        f"Scoring: rank-weighted top tracks (time weights: {weights}). "
+        f"Target size: {config.target_size}. "
+        "Expanded with shared artist top tracks when needed."
+    )
+
+
 class BlendAdapter(Protocol):
     def get_taste_profile(self, user_id: str, time_weights: dict[str, float]) -> UserTasteProfile: ...
 
     def get_artist_top_tracks(self, artist_id: str) -> list[ScoredTrack]: ...
 
-    def create_playlist(self, user_id: str, name: str, track_uris: list[str]) -> Playlist: ...
+    def create_playlist(self, user_id: str, name: str, track_uris: list[str], description: str = "") -> Playlist: ...
 
 
 class BlendEngine:

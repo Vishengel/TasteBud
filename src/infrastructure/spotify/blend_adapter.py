@@ -75,8 +75,10 @@ class SpotifyAdapter:
             for t in tracks
         ]
 
-    def create_playlist(self, user_id: str, name: str, track_uris: list[str]) -> Playlist:
-        playlist_dict = self._client.user_playlist_create(user=user_id, name=name, public=False)
+    def create_playlist(self, user_id: str, name: str, track_uris: list[str], description: str = "") -> Playlist:
+        playlist_dict = self._client.user_playlist_create(
+            user=user_id, name=name, public=False, description=description
+        )
         playlist_id = playlist_dict["id"]
         self._client.replace_tracks_in_playlist(playlist_id, track_uris)
         return Playlist(
