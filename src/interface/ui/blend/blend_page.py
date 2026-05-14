@@ -4,8 +4,8 @@ from nicegui import ui
 
 from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine
-from common.ui.layout import NiceGUIPage
 from domain.blend.models import BlendConfig, Platform
+from interface.ui.layout import NiceGUIPage
 
 
 def _default_playlist_name(user_ids: list[str]) -> str:

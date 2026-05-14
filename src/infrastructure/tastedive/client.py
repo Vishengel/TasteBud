@@ -3,9 +3,9 @@ from urllib.parse import quote
 
 from diskcache import Cache
 
-from common.http.exceptions import TooManyRequestsError
-from common.http.http_client import HttpResponse
-from common.http.sync_httpx_client import httpx_get_request
+from infrastructure.http.exceptions import TooManyRequestsError
+from infrastructure.http.http_client import HttpResponse
+from infrastructure.http.sync_httpx_client import httpx_get_request
 from infrastructure.tastedive.config import CONFIG
 
 

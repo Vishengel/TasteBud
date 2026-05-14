@@ -3,8 +3,8 @@ from nicegui.events import GenericEventArguments
 
 from application.playlist_manager.playlist_manager import PlaylistManager
 from application.playlist_manager.service import make_playlist_manager
-from common.ui.layout import NiceGUIPage
 from domain.playlists.models import Playlist
+from interface.ui.layout import NiceGUIPage
 from interface.ui.playlist_manager.components.playlists_table import PlaylistTable
 
 

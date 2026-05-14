@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from common.http.http_client import HttpResponse, SyncHttpClient
-from common.http.sync_httpx_client import SyncHTTPXClient
+from infrastructure.http.http_client import HttpResponse, SyncHttpClient
+from infrastructure.http.sync_httpx_client import SyncHTTPXClient
 
 
 @dataclass

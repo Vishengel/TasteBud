@@ -1,8 +1,8 @@
 from nicegui import ui
 from starlette.responses import RedirectResponse
 
-from common.ui.layout import common_layout
 from interface.api.playlist_manager.app import app
+from interface.ui.layout import common_layout
 from interface.ui.playlist_manager.playlists_page import PlaylistsPage
 
 

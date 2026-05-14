@@ -3,8 +3,8 @@ import logging
 import httpx
 from httpx import Client, HTTPStatusError, RequestError
 
-from common.http.exceptions import TOO_MANY_REQUESTS_ERROR_CODE, TooManyRequestsError
-from common.http.http_client import HttpResponse, SyncHttpClient
+from infrastructure.http.exceptions import TOO_MANY_REQUESTS_ERROR_CODE, TooManyRequestsError
+from infrastructure.http.http_client import HttpResponse, SyncHttpClient
 
 logger = logging.getLogger(__name__)
 

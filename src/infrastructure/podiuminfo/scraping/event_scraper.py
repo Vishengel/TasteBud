@@ -3,11 +3,11 @@ from collections.abc import Iterable
 from copy import copy
 from typing import ClassVar
 
-from common.http.http_client import HttpResponse
-from common.scrape.async_scrape_engine import AsyncScrapeEngine, ScrapeTask
 from domain.events.models import Event
+from infrastructure.http.http_client import HttpResponse
 from infrastructure.podiuminfo.data_model import PodiuminfoQueryParams
 from infrastructure.podiuminfo.scraping.event_html_parser import extract_events_from_html
+from infrastructure.scrape.async_scrape_engine import AsyncScrapeEngine, ScrapeTask
 
 logger = logging.getLogger(__name__)
 
