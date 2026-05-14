@@ -14,7 +14,7 @@ async def page():
 
 if __name__ in {"__main__", "__mp_main__"}:
     # isort: off
-    import interface.event_scanner_main
+    import interface.event_scanner_main  # noqa: F401 — registers /event-scanner
     import interface.blend_main  # noqa: F401 — registers /blend
     # isort: on
 
