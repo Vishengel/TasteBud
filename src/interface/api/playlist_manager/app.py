@@ -12,21 +12,18 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-class SpotifyPlaylistRef(BaseModel):
+class PlaylistRef(BaseModel):
     id: str
     name: str
-    href: str
-    description: str
-    tracks_url: str
+    external_url: str
     n_tracks: int
-    collaborative: bool
     owner_id: str
-    generated_by_tastebud: bool | None = None
+    generated_by_tastebud: bool = False
 
 
 class GetPlaylistsResponse(BaseModel):
     user_id: str
-    playlists: list[SpotifyPlaylistRef]
+    playlists: list[PlaylistRef]
 
 
 class CombinePlaylistsRequest(BaseModel):
@@ -34,7 +31,7 @@ class CombinePlaylistsRequest(BaseModel):
 
 
 class CombinePlaylistsResponse(BaseModel):
-    combined_playlist: SpotifyPlaylistRef
+    combined_playlist: PlaylistRef
 
 
 class ErrorResponse(BaseModel):
@@ -68,7 +65,7 @@ async def get_playlists(user_id: str) -> GetPlaylistsResponse:
         ) from exc
     return GetPlaylistsResponse(
         user_id=user_id,
-        playlists=[SpotifyPlaylistRef.model_validate(pl.model_dump()) for pl in playlists],
+        playlists=[PlaylistRef.model_validate(pl.model_dump()) for pl in playlists],
     )
 
 
@@ -82,7 +79,7 @@ async def combine_playlists(user_id: str, body: CombinePlaylistsRequest) -> Comb
         raise HTTPException(
             status_code=exc.code, detail=f"Error combining playlists for user {user_id}: {exc.reason}"
         ) from exc
-    return CombinePlaylistsResponse(combined_playlist=SpotifyPlaylistRef.model_validate(combined_playlist.model_dump()))
+    return CombinePlaylistsResponse(combined_playlist=PlaylistRef.model_validate(combined_playlist.model_dump()))
 
 
 @router.get("/health")

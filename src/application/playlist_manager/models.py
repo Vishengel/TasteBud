@@ -1,3 +1,3 @@
-from infrastructure.spotify.models import SpotifyPlaylist, SpotifyTrack
+from domain.playlists.models import Playlist, Track
 
-__all__ = ["SpotifyPlaylist", "SpotifyTrack"]
+__all__ = ["Playlist", "Track"]
