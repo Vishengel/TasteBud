@@ -118,6 +118,6 @@ async def common_layout(nicegui_page: NiceGUIPage, active_route: str = ""):
             active_class = "active" if route == active_route else ""
             nav_html += f'<a href="{route}" class="{active_class}">{label}</a>'
         nav_html += "</div>"
-        ui.html(nav_html)
+        ui.html(nav_html, sanitize=False)
 
     await nicegui_page.create_page()
