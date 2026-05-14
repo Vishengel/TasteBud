@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 
 from application.event_scanner.relevancy.distance_relevancy_score import DistanceRelevancyScore
-from application.event_scanner.relevancy.lastfm_relevancy_score import LastFMRelevancyScore
 from application.event_scanner.relevancy.relevancy_score import RelevancyScore
 from domain.events.models import Event
+from infrastructure.lastfm.relevancy_score import LastFMRelevancyScore
 
 
 @dataclass

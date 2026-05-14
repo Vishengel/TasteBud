@@ -4,9 +4,9 @@ from nicegui import ui
 
 from application.event_scanner.event_sources.event_source_base import EventSource, EventSourceType
 from application.event_scanner.event_sources.event_source_factory import event_source_factory
-from application.event_scanner.relevancy.lastfm_relevancy_score import LastFMPeriodOption
 from application.event_scanner.relevancy.relevancy_score_registry import RelevancyScoreRegistry
 from common.ui.layout import NiceGUIPage
+from infrastructure.lastfm.relevancy_score import LastFMPeriodOption
 
 
 class EventScannerPage(NiceGUIPage):
