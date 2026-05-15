@@ -5,7 +5,8 @@ from starlette.responses import RedirectResponse
 # isort: off
 import interface.event_scanner_main
 import interface.playlist_manager_main
-import interface.blend_main  # noqa: F401
+import interface.blend_main
+import interface.login_main  # noqa: F401
 
 # isort: on
 from interface.api.blend.app import app as blend_app

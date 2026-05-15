@@ -1,12 +1,15 @@
 import logging
+import re
 
 from nicegui import ui
-from spotipy import CacheFileHandler, SpotifyOAuth
+from spotipy import CacheFileHandler, SpotifyException, SpotifyOAuth
 from starlette.requests import Request
 
 from infrastructure.spotify.config import CONFIG
 
 logger = logging.getLogger(__name__)
+
+_SAFE_USER_ID = re.compile(r"^[\w-]+$")  # \w = [a-zA-Z0-9_]
 
 
 @ui.page("/auth/spotify/callback")
@@ -21,11 +24,18 @@ async def spotify_callback(request: Request):
 
     # Check for OAuth errors or missing required params
     if error or not code or not state:
+        logger.warning("OAuth callback missing required params: code=%r state=%r error=%r", code, state, error)
         ui.navigate.to("/login?error=auth_failed")
         return
 
-    # Attempt token exchange
+    # Sanitize state param to prevent path traversal
+    if not _SAFE_USER_ID.match(state):
+        logger.warning("Rejected unsafe state param: %r", state)
+        ui.navigate.to("/login?error=auth_failed")
+        return
     user_id = state
+
+    # Attempt token exchange
     cache_filename = f"credentials_{user_id}"
     try:
         oauth = SpotifyOAuth(
@@ -34,9 +44,17 @@ async def spotify_callback(request: Request):
             redirect_uri=CONFIG.spotipy_redirect_uri,
             cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / cache_filename),
         )
-        oauth.get_access_token(code, as_dict=False)
+        token = oauth.get_access_token(code, as_dict=False)
+        if not token:
+            logger.error("Token exchange returned no token for user_id=%s", user_id)
+            ui.navigate.to("/login?error=auth_failed")
+            return
+    except SpotifyException as exc:
+        logger.exception("Spotify OAuth error for user_id=%s: %s", user_id, exc)
+        ui.navigate.to("/login?error=auth_failed")
+        return
     except Exception:
-        logger.exception("Spotify token exchange failed for user_id=%s", user_id)
+        logger.exception("Unexpected error during token exchange for user_id=%s", user_id)
         ui.navigate.to("/login?error=auth_failed")
         return
 
