@@ -8,6 +8,7 @@ from starlette.requests import Request
 from infrastructure.spotify.config import CONFIG
 from interface.ui.layout import common_layout
 from interface.ui.login.login_page import LoginPage
+from interface.ui.login.success_page import SuccessPage
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,8 @@ async def login_page(request: Request):
 
 
 @ui.page("/login/success")
-async def login_success_page():
-    """Login success page. Stub for Task 4."""
-    ui.label("Login success page (stub)")
+async def login_success_page(request: Request):
+    """Login success page. Reads user_id from query params and displays Spotify profile."""
+    user_id = request.query_params.get("user_id", "")
+    page = SuccessPage(user_id=user_id)
+    await common_layout(page, active_route="/login")
