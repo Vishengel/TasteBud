@@ -5,6 +5,7 @@ from nicegui import ui
 from spotipy import CacheFileHandler, SpotifyException, SpotifyOAuth
 from starlette.requests import Request
 
+from common.config import BaseConfig
 from infrastructure.spotify.config import CONFIG
 from interface.ui.layout import common_layout
 from interface.ui.login.login_page import LoginPage
@@ -39,6 +40,7 @@ async def spotify_callback(request: Request):
     user_id = state
 
     # Attempt token exchange
+    BaseConfig.ensure_dirs()
     cache_filename = f"credentials_{user_id}"
     try:
         oauth = SpotifyOAuth(

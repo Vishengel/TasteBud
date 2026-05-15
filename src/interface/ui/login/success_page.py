@@ -1,7 +1,11 @@
+import logging
+
 from nicegui import ui
 
 from infrastructure.spotify.client import SpotifyClient
 from interface.ui.layout import NiceGUIPage
+
+logger = logging.getLogger(__name__)
 
 
 class SuccessPage(NiceGUIPage):
@@ -15,7 +19,7 @@ class SuccessPage(NiceGUIPage):
             profile = client.current_user()
             display_name = profile.get("display_name") or self.user_id
         except Exception:
-            pass
+            logger.warning("Could not fetch Spotify display name for user_id=%s", self.user_id, exc_info=True)
 
         with ui.column().classes("items-center w-full mt-10 gap-6"):
             with ui.card().classes("tb-card w-full max-w-md p-6 gap-4"):
