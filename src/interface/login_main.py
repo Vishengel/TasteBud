@@ -6,6 +6,8 @@ from spotipy import CacheFileHandler, SpotifyException, SpotifyOAuth
 from starlette.requests import Request
 
 from infrastructure.spotify.config import CONFIG
+from interface.ui.layout import common_layout
+from interface.ui.login.login_page import LoginPage
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +65,11 @@ async def spotify_callback(request: Request):
 
 
 @ui.page("/login")
-async def login_page():
-    """Login page. Stub for Task 3."""
-    ui.label("Login page (stub)")
+async def login_page(request: Request):
+    """Login page. Reads ?error query param to show inline error messages."""
+    error = request.query_params.get("error")
+    page = LoginPage(error=error)
+    await common_layout(page, active_route="/login")
 
 
 @ui.page("/login/success")
