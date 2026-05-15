@@ -6,6 +6,7 @@ from spotipy import CacheFileHandler, SpotifyException, SpotifyOAuth
 from starlette.requests import Request
 
 from common.config import BaseConfig
+from infrastructure.spotify.client import SpotifyClient
 from infrastructure.spotify.config import CONFIG
 from interface.ui.layout import common_layout
 from interface.ui.login.login_page import LoginPage
@@ -47,6 +48,7 @@ async def spotify_callback(request: Request):
             client_id=CONFIG.spotipy_client_id,
             client_secret=CONFIG.spotipy_client_secret.get_secret_value(),
             redirect_uri=CONFIG.spotipy_redirect_uri,
+            scope=" ".join(SpotifyClient.SCOPE),
             cache_handler=CacheFileHandler(cache_path=CONFIG.cache_dir / cache_filename),
         )
         token = oauth.get_access_token(code, as_dict=False)
