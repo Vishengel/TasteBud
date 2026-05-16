@@ -17,6 +17,8 @@ class SuccessPage(NiceGUIPage):
         try:
             client = SpotifyClient(user_id=self.user_id)
             profile = client.current_user()
+            if profile["id"] != self.user_id:
+                raise ValueError(f"Token mismatch: expected {self.user_id!r}, got {profile['id']!r}")
             display_name = profile.get("display_name") or self.user_id
         except Exception:
             logger.warning("Could not fetch Spotify display name for user_id=%s", self.user_id, exc_info=True)
