@@ -5,7 +5,22 @@ from nicegui import ui
 from application.blend.adapter_factory import make_adapter
 from application.blend.blend_engine import BlendEngine, build_blend_description
 from domain.blend.models import BlendConfig, Platform
+from infrastructure.spotify.client import SpotifyClient
+from infrastructure.spotify.config import CONFIG
 from interface.ui.layout import NiceGUIPage
+
+
+def _verify_cached_token(user_id: str) -> bool:
+    """Return True only if cache file exists and its token belongs to user_id."""
+    cache_path = CONFIG.cache_dir / f"credentials_{user_id}"
+    if not cache_path.exists():
+        return False
+    try:
+        client = SpotifyClient(user_id=user_id)
+        profile = client.current_user()
+        return profile["id"] == user_id
+    except Exception:
+        return False
 
 
 def _default_playlist_name(user_ids: list[str]) -> str:
@@ -34,6 +49,11 @@ class BlendPage(NiceGUIPage):
         playlist_name = self.playlist_name_input.value or _default_playlist_name(all_user_ids)
         target_size = int(self.target_size_slider.value)
         config = BlendConfig(playlist_name=playlist_name, target_size=target_size)
+
+        missing = [uid for uid in all_user_ids if not _verify_cached_token(uid)]
+        if missing:
+            ui.notify(f"Not connected: {', '.join(missing)} — ask them to visit /login first", type="negative")
+            return
 
         try:
             adapters = [make_adapter(uid, Platform.SPOTIFY) for uid in all_user_ids]

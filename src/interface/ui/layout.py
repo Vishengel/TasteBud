@@ -11,6 +11,7 @@ NAV_LINKS = [
     ("/event-scanner", "Events"),
     ("/playlist-manager", "Playlists"),
     ("/blend", "Blend"),
+    ("/login", "Connect"),
 ]
 
 CSS_VARS = """
